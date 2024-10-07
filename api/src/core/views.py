@@ -60,25 +60,32 @@ class BaseManager:
         """
         try:
             objects = self._get_queryset(db).get(id)
-            objects = self._serialize(objects.__dict__)
-            return JSONResponse({
-                "success" : True,
-                "data": objects
-            })
+            if objects:
+                objects = self._serialize(objects.__dict__)
+                return JSONResponse({
+                    "success" : True,
+                    "data": objects
+                })
+            else:
+                return JSONResponse({
+                    "success": False,
+                    "message": "No records found"
+                })
         except Exception as e:
             print("Error in generating response: \n\n", e)
             pass
         
-    def get_all(self, db: Session = Depends(get_db), params: Dict[str, Any]=None, skip: int=0, limit: int = 20):
+    def get_all(self, db: Session = Depends(get_db), params: Dict[str, Any]=None, page_number: int=1, page_size: int = 10):
         """
         Get all method
         """
+        skip = (page_number - 1)*page_size 
         query = self._get_queryset(db)
         if params:
             for attr in [x for x in params if params[x] is not None]:
                 query = query.filter(getattr(self.model, attr) == params[attr])
 
-        return query.offset(skip).limit(limit).all()
+        return query.offset(skip).limit(page_size).all()
     
     def create(self, data,  db: Session = Depends(get_db)):
         """

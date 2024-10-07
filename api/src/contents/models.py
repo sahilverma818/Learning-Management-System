@@ -1,30 +1,3 @@
-
-
-# Modules
-"""
-    id
-    title
-    description
-    course_id
-"""
-
-# Lessons
-"""
-    id
-    title
-    description
-    module id
-"""
-
-# Content
-"""
-   id
-   title
-   content_type
-   file_path
-   lesson_id 
-"""
-
 from datetime import datetime
 
 from sqlalchemy import Column, Integer, String, Boolean, Enum, DateTime, ForeignKey, Float
@@ -34,7 +7,7 @@ from src.core.database import Base
 
 class Modules(Base):
 
-    __tablename__ = "modules"
+    __tablename__ = "Modules"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     module_title = Column(String)
@@ -45,7 +18,8 @@ class Modules(Base):
     is_archieved = Column(Boolean, default=False)
 
     # Define relationships
-    course = relationship("Courses", back_populates="Modules")
+    courses = relationship("Courses", back_populates="modules")
+    lectures = relationship("Lectures", back_populates="modules")
 
 
 class Lectures(Base):
@@ -56,11 +30,11 @@ class Lectures(Base):
     lecture_title = Column(String)
     lecture_description = Column(String)
     video_path = Column(String)
-    module_id = Column(Integer, ForeignKey("modules.id"))
+    module_id = Column(Integer, ForeignKey("Modules.id"))
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, default=datetime.now())
     is_archieved = Column(Boolean, default=False)
 
     
     # Define relationships
-    module = relationship('Modules', back_populates='Lectures')
+    modules = relationship('Modules', back_populates='lectures')

@@ -21,4 +21,5 @@ class Courses(Base):
     is_archieved = Column(Boolean, default=False)
 
     # Define relationships
-    instructor = relationship("Users", back_populates="Courses")
+    instructor = relationship("Users", back_populates="courses")
+    modules = relationship('Modules', back_populates='courses')

@@ -20,5 +20,5 @@ class Users(Base):
     is_archieved = Column(Boolean, default=False)
 
     # Define relationship
-    Courses = relationship("Courses", back_populates="instructor")
+    courses = relationship("Courses", back_populates="instructor")
 
