@@ -32,5 +32,21 @@ def login(db, form_data: schemas.UserCreate):
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = utils.jwt_manager.create_access_token(data={"sub": user.email})
+    access_token = utils.jwt_manager.create_access_token(data={
+        "user_email": user.email,
+        "user_id": user.id,
+        "user_role": user.role.name})
     return {"access_token": access_token, "token_type": "bearer"}
+
+def reset_password(db, form_data):
+    try:
+        credentials_exception = HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+        token_data = utils.jwt_manager.verify_token(form_data.token, credentials_exception)
+        print(token_data)
+    except Exception as e:
+        print(e)
+    pass

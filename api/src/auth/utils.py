@@ -20,9 +20,10 @@ class TokenAuthentication:
             data.update({
                 "exp": expire
             })
-
+            print("Encoded data:", data)
             encoded_jwt = jwt.encode(data, self.SECRET_KEY, algorithm=self.ALGORITHM)
             return encoded_jwt
+        
         except Exception as e:
             pass
     
@@ -33,10 +34,13 @@ class TokenAuthentication:
                 key=self.SECRET_KEY,
                 algorithms=self.ALGORITHM
             )
-            email: str = payload.get("sub")
-            if email is None:
+            user_email: str = payload.get("user_email")
+            user_id: int = payload.get("user_id")
+            user_role: str = payload.get("user_role")
+            print("Expiry Date: ", payload.get("exp"))
+            if user_email is None:
                 raise credentials_exception
-            token_data = TokenData(email=email)
+            token_data = TokenData(email=user_email, id=user_id, role=user_role)
 
         except JWTError:
             raise credentials_exception

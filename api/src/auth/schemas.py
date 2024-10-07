@@ -10,3 +10,9 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: str
+    id: int
+    role: str
+
+class ResetPassword(BaseModel):
+    token: str
+    new_password: str

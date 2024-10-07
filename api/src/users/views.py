@@ -34,7 +34,6 @@ class UserModelViewSet(BaseManager):
         """
         Update method
         """
-        print("Debugger Reached")
         return super().update(id, data, db)
     
     def _serialize(self, objects):

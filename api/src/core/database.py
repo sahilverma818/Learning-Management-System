@@ -1,8 +1,15 @@
+import configparser
+
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./lmsdb.db"
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+db_name = config['database']['db_name']
+
+SQLALCHEMY_DATABASE_URL = f"sqlite:///./{db_name}"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)

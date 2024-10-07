@@ -104,7 +104,6 @@ class BaseManager:
         """
         Update method
         """
-        print("Debugger Reached Super Update Method")
         object_data = self._get_queryset(db).get(id)
         for field in data.__dict__:
             setattr(object_data, field, data.__dict__[field])
