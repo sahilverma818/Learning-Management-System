@@ -7,6 +7,7 @@ from src.users import models
 from src.core.database import get_db
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+active_tokens = {}
 
 
 def verify_password(plain_password, hashed_password):
@@ -38,6 +39,7 @@ def login(db, form_data: schemas.UserCreate):
         "user_id": user.id,
         "user_role": user.role.name
     })
+    active_tokens[user.email] = access_token
     return JSONResponse({"access_token": access_token, "token_type": "bearer"})
 
 

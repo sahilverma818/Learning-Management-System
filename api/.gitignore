@@ -13,3 +13,7 @@ venv/
 # Pycache
 
 __pycache__/
+
+# Devs tools files
+
+.vscode/

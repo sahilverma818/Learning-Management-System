@@ -22,11 +22,11 @@ class BaseManager:
         """
         Get Routes Method
         """
-        self.routes.add_api_route(f'/{self.model.__name__.lower()}/get', self.get, methods=['GET'], response_model=None)
-        self.routes.add_api_route(f'/{self.model.__name__.lower()}/post', self.create, methods=['POST'], response_model=None)
-        self.routes.add_api_route(f"/{self.model.__name__.lower()}/list", self.get_all, methods=["POST"], response_model=None)
-        self.routes.add_api_route(f"/{self.model.__name__.lower()}/update", self.update, methods=["PATCH"], response_model=None)
-        self.routes.add_api_route(f"/{self.model.__name__.lower()}/delete", self.delete, methods=["DELETE"], response_model=None)
+        self.routes.add_api_route('/get', self.get, methods=['GET'], response_model=None)
+        self.routes.add_api_route('/post', self.create, methods=['POST'], response_model=None)
+        self.routes.add_api_route("/list", self.get_all, methods=["GET"], response_model=None)
+        self.routes.add_api_route("/update", self.update, methods=["PATCH"], response_model=None)
+        self.routes.add_api_route("/delete", self.delete, methods=["DELETE"], response_model=None)
         
     def _get_queryset(self, db: Session):
         """
