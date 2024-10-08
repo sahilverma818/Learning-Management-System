@@ -1,0 +1,15 @@
+# init files
+
+*.ini
+*.db
+
+# Virtualenvs
+
+.env/
+env/
+venv/
+.venv/
+
+# Pycache
+
+__pycache__/
