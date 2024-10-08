@@ -1,8 +1,8 @@
+import time
 from datetime import datetime, timedelta
-from typing import Optional
 
 from jose import JWTError, jwt
-from fastapi import HTTPException, status
+from fastapi import HTTPException
 
 from src.auth.config import settings
 from src.auth.schemas import TokenData
@@ -34,16 +34,20 @@ class TokenAuthentication:
                 key=self.SECRET_KEY,
                 algorithms=self.ALGORITHM
             )
+
             user_email: str = payload.get("user_email")
             user_id: int = payload.get("user_id")
             user_role: str = payload.get("user_role")
-            print("Expiry Date: ", payload.get("exp"))
-            if user_email is None:
+            
+            is_valid = int(time.time()) < payload.get('exp')
+            if user_email is None and not is_valid:
                 raise credentials_exception
             token_data = TokenData(email=user_email, id=user_id, role=user_role)
 
-        except JWTError:
+        except JWTError as e:
+            print(e)
             raise credentials_exception
+        
         return token_data
     
 jwt_manager = TokenAuthentication()
