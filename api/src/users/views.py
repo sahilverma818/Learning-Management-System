@@ -30,7 +30,7 @@ class UserModelViewSet(BaseManager):
         data.hashed_password = hash_password(data.hashed_password)
         return super().create(data, db)
     
-    def update(self, id: int, data: schemas.UserUpdate, current_user: schemas.UserUpdate = Depends(dependencies.get_current_user), db: Session = Depends(get_db)):
+    def update(self, id: int, data: schemas.UserUpdate, current_user = Depends(dependencies.get_current_user), db: Session = Depends(get_db)):
         """
         Update method
         """

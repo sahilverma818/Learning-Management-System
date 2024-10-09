@@ -24,7 +24,7 @@ class BaseManager:
         """
         self.routes.add_api_route('/get', self.get, methods=['GET'], response_model=None)
         self.routes.add_api_route('/post', self.create, methods=['POST'], response_model=None)
-        self.routes.add_api_route("/list", self.get_all, methods=["GET"], response_model=None)
+        self.routes.add_api_route("/list", self.get_all, methods=["POST"], response_model=None)
         self.routes.add_api_route("/update", self.update, methods=["PATCH"], response_model=None)
         self.routes.add_api_route("/delete", self.delete, methods=["DELETE"], response_model=None)
         

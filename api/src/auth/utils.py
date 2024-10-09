@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 from jose import JWTError, jwt
 from fastapi import HTTPException
+from fastapi.responses import JSONResponse
 
 from src.auth.config import settings
 from src.auth.schemas import TokenData
@@ -25,7 +26,10 @@ class TokenAuthentication:
             return encoded_jwt
         
         except Exception as e:
-            pass
+            return JSONResponse(
+                content={"message": f"Errow while generating access token\n{str(e)}", "success": False},
+                status_code=500
+            )
     
     def verify_token(self, token: str, credentials_exception: HTTPException):
         try:
@@ -41,12 +45,17 @@ class TokenAuthentication:
             
             is_valid = int(time.time()) < payload.get('exp')
             if user_email is None and not is_valid:
-                raise credentials_exception
+                return JSONResponse(
+                    content={"message": "Token is not valid", "success": False},
+                    status_code=401
+                )
             token_data = TokenData(email=user_email, id=user_id, role=user_role)
 
         except JWTError as e:
-            print(e)
-            raise credentials_exception
+            return JSONResponse(
+                content={"message": f"Authentication Error: {str(e)}", "success": False},
+                status_code=500
+            )
         
         return token_data
     
