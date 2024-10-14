@@ -1,11 +1,13 @@
 from typing import Dict, Any, List
+from datetime import datetime
 
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm.collections import InstrumentedList
+
 
 from src.core.database import get_db
-from src.users.utils import RoleEnum
 
 class BaseManager:
     """
@@ -22,11 +24,11 @@ class BaseManager:
         """
         Get Routes Method
         """
-        self.routes.add_api_route('/get', self.get, methods=['GET'], response_model=None)
-        self.routes.add_api_route('/post', self.create, methods=['POST'], response_model=None)
-        self.routes.add_api_route("/list", self.get_all, methods=["POST"], response_model=None)
-        self.routes.add_api_route("/update", self.update, methods=["PATCH"], response_model=None)
-        self.routes.add_api_route("/delete", self.delete, methods=["DELETE"], response_model=None)
+        self.routes.add_api_route('/get', self.fetch_record, methods=['GET'], response_model=None)
+        self.routes.add_api_route('/post', self.create_record, methods=['POST'], response_model=None)
+        self.routes.add_api_route("/list", self.fetch_all_records, methods=["POST"], response_model=None)
+        self.routes.add_api_route("/update", self.update_record, methods=["PATCH"], response_model=None)
+        self.routes.add_api_route("/delete", self.delete_record, methods=["DELETE"], response_model=None)
         
     def _get_queryset(self, db: Session):
         """
@@ -34,15 +36,34 @@ class BaseManager:
         """
         return db.query(self.model)
     
-    def _serialize(self, objects):
+    def _serialize(self, objects, related_field = None):
         """
         To Serialize data
         """
         data = {}
         for object in objects:
             if hasattr(self.model, object):
-                data[object] = objects[object]
+                if isinstance(objects[object], InstrumentedList):
+                    class_object = type(objects[object][0])
+                    data[object] = self._serialize_all(objects[object], class_object)
+                elif isinstance(objects[object], datetime):
+                    data[object] = str(objects[object])
+                else:
+                    data[object] = objects[object]
         return data
+    
+    def _serialize_all(self, objects, related_field=None):
+        generated_list = []
+        for object in objects:
+            obj_dict = {}
+            for data in object.__dict__:
+                if hasattr(related_field, data):
+                    if isinstance(object.__dict__[data], datetime):
+                        obj_dict[data] = str(object.__dict__[data])
+                    else:
+                        obj_dict[data] = object.__dict__[data]
+            generated_list.append(obj_dict)
+        return generated_list
     
     def _commit(self, db: Session, db_object=None):
         """
@@ -54,14 +75,17 @@ class BaseManager:
         return db_object
 
     
-    def get(self, id: int, db: Session = Depends(get_db)):
+    def fetch_record(self, id: int, related_field=None, db: Session = Depends(get_db)):
         """
         Get Method
         """
         try:
-            objects = self._get_queryset(db).get(id)
+            if related_field:
+                objects = self._get_queryset(db).options(joinedload(related_field)).get(id)
+            else:
+                objects = self._get_queryset(db).get(id)
             if objects:
-                objects = self._serialize(objects.__dict__)
+                objects = self._serialize(objects.__dict__, related_field)
                 return JSONResponse({
                     "success" : True,
                     "data": objects
@@ -73,9 +97,8 @@ class BaseManager:
                 })
         except Exception as e:
             print("Error in generating response: \n\n", e)
-            pass
         
-    def get_all(self, db: Session = Depends(get_db), params: Dict[str, Any]=None, page_number: int=1, page_size: int = 10):
+    def fetch_all_records(self, db: Session = Depends(get_db), params: Dict[str, Any]=None, page_number: int=1, page_size: int = 10):
         """
         Get all method
         """
@@ -87,7 +110,7 @@ class BaseManager:
 
         return query.offset(skip).limit(page_size).all()
     
-    def create(self, data,  db: Session = Depends(get_db)):
+    def create_record(self, data,  db: Session = Depends(get_db)):
         """
         Create method
         """
@@ -100,7 +123,7 @@ class BaseManager:
         except Exception as e:
             print("Error in generating response:--->>>>\n\n",e)
                 
-    def update(self, id: int, data, db: Session = Depends(get_db)):
+    def update_record(self, id: int, data, db: Session = Depends(get_db)):
         """
         Update method
         """
@@ -110,7 +133,7 @@ class BaseManager:
         object_data = self._commit(db, object_data)
         return object_data
 
-    def delete(self, id: int, db: Session = Depends(get_db)):
+    def delete_record(self, id: int, db: Session = Depends(get_db)):
         """
         Delete Method
         """

@@ -1,8 +1,9 @@
 import configparser
 
+import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
-import uvicorn
+from fastapi.staticfiles import StaticFiles
 
 from src.core.database import engine, Base
 
@@ -14,12 +15,14 @@ from src.contents.router import (
     module_router
 )
 
+config = configparser.ConfigParser()
+config.read('config.ini')
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-config = configparser.ConfigParser()
-config.read('config.ini')
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
 def read_root():
