@@ -14,6 +14,7 @@ from src.contents.router import (
     lecture_router,
     module_router
 )
+from src.coupons.router import coupon_router
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -49,6 +50,7 @@ app.include_router(user_router, prefix="/users")
 app.include_router(course_router, prefix="/courses")
 app.include_router(lecture_router, prefix="/lectures")
 app.include_router(module_router, prefix="/modules")
+app.include_router(coupon_router, prefix='/coupons')
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

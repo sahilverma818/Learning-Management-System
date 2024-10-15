@@ -96,7 +96,10 @@ class BaseManager:
                     "message": "No records found"
                 })
         except Exception as e:
-            print("Error in generating response: \n\n", e)
+            return JSONResponse(
+                content={"success": False, "message": f"failed to fetch records {str(e)}"},
+                status_code=500
+            )
         
     def fetch_all_records(self, db: Session = Depends(get_db), params: Dict[str, Any]=None, page_number: int=1, page_size: int = 10):
         """
@@ -129,7 +132,8 @@ class BaseManager:
         """
         object_data = self._get_queryset(db).get(id)
         for field in data.__dict__:
-            setattr(object_data, field, data.__dict__[field])
+            if data.__dict__[field]:
+                setattr(object_data, field, data.__dict__[field])
         object_data = self._commit(db, object_data)
         return object_data
 

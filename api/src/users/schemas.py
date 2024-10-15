@@ -21,11 +21,11 @@ class UserCreate(BaseModel):
 
 class UserUpdate(BaseModel):
 
-    email: Optional[EmailStr]
-    password: Optional[str]
-    role: Optional[RoleEnum]
-    firstname: Optional[str]
-    lastname: Optional[str]
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
+    role: Optional[RoleEnum] = None
+    firstname: Optional[str] = None
+    lastname: Optional[str] = None
 
     class config:
         orm_mode = True

@@ -2,6 +2,7 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.collections import InstrumentedList
 
 from src.core.views import BaseManager
 from src.core.database import get_db
@@ -36,7 +37,12 @@ class UserModelViewSet(BaseManager):
         """
         return super().update_record(id, data, db)
     
-    def _serialize(self, objects):
+    def fetch_record(self, id: int, db: Session = Depends(get_db)):
+        related_field = Users.courses
+        response = super().fetch_record(id, related_field, db)
+        return response
+    
+    def _serialize(self, objects, related_field = None):
         """
         To Serialize data
         """
@@ -49,6 +55,9 @@ class UserModelViewSet(BaseManager):
                     data[object] = str(objects[object])
                 elif isinstance(objects[object], RoleEnum):
                     data[object] = objects[object].name
+                if isinstance(objects[object], InstrumentedList):
+                    class_object = type(objects[object][0])
+                    data[object] = self._serialize_all(objects[object], class_object)
                 else:
                     data[object] = objects[object]
         return data

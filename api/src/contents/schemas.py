@@ -8,9 +8,9 @@ class ModuleCreate(BaseModel):
     course_id: int
 
 class ModuleUpdate(BaseModel):
-    module_title: Optional[str]
-    module_description: Optional[str]
-    course_id:Optional[str]
+    module_title: Optional[str] = None
+    module_description: Optional[str] = None
+    course_id:Optional[str] = None
 
 class LectureCreate(BaseModel):
 
@@ -20,7 +20,7 @@ class LectureCreate(BaseModel):
     module_id: int
 
 class LectureUpdate(BaseModel):
-    lecture_title: Optional[str]
-    lecture_description: Optional[str]
-    video_path: Optional[str]
-    module_id: Optional[int]
+    lecture_title: Optional[str] = None
+    lecture_description: Optional[str] = None
+    video_path: Optional[str] = None
+    module_id: Optional[int] = None
