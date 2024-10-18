@@ -24,7 +24,7 @@ class BaseManager:
         """
         Get Routes Method
         """
-        self.routes.add_api_route('/get', self.fetch_record, methods=['GET'], response_model=None)
+        self.routes.add_api_route('/get', self.fetch_record, methods=['GET', 'POST'], response_model=None)
         self.routes.add_api_route('/post', self.create_record, methods=['POST'], response_model=None)
         self.routes.add_api_route("/list", self.fetch_all_records, methods=["POST"], response_model=None)
         self.routes.add_api_route("/update", self.update_record, methods=["PATCH"], response_model=None)
@@ -84,6 +84,7 @@ class BaseManager:
                 objects = self._get_queryset(db).options(joinedload(related_field)).get(id)
             else:
                 objects = self._get_queryset(db).get(id)
+
             if objects:
                 objects = self._serialize(objects.__dict__, related_field)
                 return JSONResponse({
@@ -95,6 +96,7 @@ class BaseManager:
                     "success": False,
                     "message": "No records found"
                 })
+            
         except Exception as e:
             return JSONResponse(
                 content={"success": False, "message": f"failed to fetch records {str(e)}"},

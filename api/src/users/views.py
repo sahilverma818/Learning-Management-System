@@ -37,9 +37,9 @@ class UserModelViewSet(BaseManager):
         """
         return super().update_record(id, data, db)
     
-    def fetch_record(self, id: int, db: Session = Depends(get_db)):
+    def fetch_record(self, current_user = Depends(dependencies.get_current_user), db: Session = Depends(get_db)):
         related_field = Users.courses
-        response = super().fetch_record(id, related_field, db)
+        response = super().fetch_record(current_user.id, related_field, db)
         return response
     
     def _serialize(self, objects, related_field = None):
@@ -55,7 +55,7 @@ class UserModelViewSet(BaseManager):
                     data[object] = str(objects[object])
                 elif isinstance(objects[object], RoleEnum):
                     data[object] = objects[object].name
-                if isinstance(objects[object], InstrumentedList):
+                elif isinstance(objects[object], InstrumentedList):
                     class_object = type(objects[object][0])
                     data[object] = self._serialize_all(objects[object], class_object)
                 else:

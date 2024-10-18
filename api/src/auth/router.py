@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from pydantic import EmailStr
+
 
 from src.auth import schemas
 from src.auth import services
@@ -11,6 +13,9 @@ auth_router = APIRouter()
 def token_generation(form_data: schemas.UserCreate, db: Session = Depends(get_db)):
     return services.login(db, form_data)
 
+@auth_router.post("/password-reset-request")
+def password_reset_request(email: EmailStr, db: Session = Depends(get_db)):
+    return services.password_reset_request_api(db, email)
 
 @auth_router.post("/reset_password")
 def reset_password(form_data: schemas.ResetPassword, db: Session = Depends(get_db)):
