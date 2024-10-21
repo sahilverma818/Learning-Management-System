@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.orm.collections import InstrumentedList
 
-
+from src.auth.dependencies import get_current_user
 from src.core.database import get_db
 
 class BaseManager:
@@ -24,7 +24,7 @@ class BaseManager:
         """
         Get Routes Method
         """
-        self.routes.add_api_route('/get', self.fetch_record, methods=['GET', 'POST'], response_model=None)
+        self.routes.add_api_route('/get', self.fetch_record, methods=['POST'], response_model=None)
         self.routes.add_api_route('/post', self.create_record, methods=['POST'], response_model=None)
         self.routes.add_api_route("/list", self.fetch_all_records, methods=["POST"], response_model=None)
         self.routes.add_api_route("/update", self.update_record, methods=["PATCH"], response_model=None)
@@ -107,11 +107,20 @@ class BaseManager:
         """
         Get all method
         """
+        page_number = 0 if page_number < 0 else page_number
+        page_size = 10 if page_size <= 0 else page_size
+        
         skip = (page_number - 1)*page_size 
         query = self._get_queryset(db)
+
         if params:
             for attr in [x for x in params if params[x] is not None]:
-                query = query.filter(getattr(self.model, attr) == params[attr])
+                column_attr = getattr(self.model, attr)
+
+                if isinstance(params[attr], str):
+                    query = query.filter(column_attr.ilike(f"%{params[attr]}%"))
+                else:
+                    query = query.filter(column_attr == params[attr])
 
         return query.offset(skip).limit(page_size).all()
     
@@ -139,11 +148,13 @@ class BaseManager:
         object_data = self._commit(db, object_data)
         return object_data
 
-    def delete_record(self, id: int, db: Session = Depends(get_db)):
+    def delete_record(self, id: int, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
         """
         Delete Method
         """
-        object = self._get_queryset(db).get(id)
-        db.delete(object)
+        db.delete(current_user)
         db.commit()
-        return object
+        return JSONResponse(
+            content={"message": "Record deleted successfully", "success": True},
+            status_code=200
+        )

@@ -1,6 +1,8 @@
 from datetime import datetime
+from typing import Any
 
 from fastapi import APIRouter, Depends
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.collections import InstrumentedList
 
@@ -41,6 +43,20 @@ class UserModelViewSet(BaseManager):
         related_field = Users.courses
         response = super().fetch_record(current_user.id, related_field, db)
         return response
+    
+    def fetch_all_records(
+            self,
+            db: Session = Depends(get_db),
+            params: dict[str, Any] = None,
+            page_number: int = 1,
+            page_size: int = 10,
+            current_user = Depends(dependencies.get_current_user)
+        ):
+        if current_user.role not in ['admin', 'lecturer']:
+            return JSONResponse(
+                content={"message": "Unauthorised Access. You don't have permission to view this page", "success": False}
+            )
+        return super().fetch_all_records(db, params, page_number, page_size)
     
     def _serialize(self, objects, related_field = None):
         """
