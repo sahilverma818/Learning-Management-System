@@ -17,7 +17,7 @@ class Orders(Base):
     status = Column(String, default="Not Verified")
     payment_method = Column(String)
     transaction_id = Column(String)
-    is_verified = Column(Boolean)
+    is_verified = Column(Boolean, default=False)
     payment_time = Column(DateTime, default=datetime.now())
 
     courses = relationship('Courses', back_populates="orders")

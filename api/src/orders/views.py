@@ -53,6 +53,9 @@ class OrderModelViewSet(BaseManager):
 
     
     async def generate_dynamic_qr(self, data: GenerateQRSchema, db: Session = Depends(get_db)):
+        """
+        Generate dynamic QR code for payment
+        """
         verification, amount = verify_and_calculate(data.course_id, data.coupon_id, db)
         if verification:
             upi_url = f"upi://pay?pa={self.UPI_ID}&pn={self.NAME}&am={amount}&cu=INR"

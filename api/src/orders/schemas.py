@@ -18,5 +18,4 @@ class CreateOrder(BaseModel):
         self.user_id = None
 
 class UpdateStatus(BaseModel):
-
     status: str

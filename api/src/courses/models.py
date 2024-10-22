@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, Boolean, Enum, DateTime, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Float
 from sqlalchemy.orm import relationship
 
 from src.core.database import Base
@@ -17,6 +17,7 @@ class Courses(Base):
     duration = Column(Integer)
     fees = Column(Float)
     created_at = Column(DateTime, default=datetime.now())
+    last_enrollment_date = Column(DateTime)
     updated_at = Column(DateTime, default=datetime.now())
     is_archieved = Column(Boolean, default=False)
 
@@ -24,3 +25,4 @@ class Courses(Base):
     instructor = relationship("Users", back_populates="courses")
     modules = relationship('Modules', back_populates='courses')
     orders = relationship("Orders", back_populates="courses")
+    enrollments = relationship("Enrollments", back_populates="courses")
