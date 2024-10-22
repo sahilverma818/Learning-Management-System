@@ -17,3 +17,7 @@ __pycache__/
 # Devs tools files
 
 .vscode/
+
+# Media Files
+
+qr-code/

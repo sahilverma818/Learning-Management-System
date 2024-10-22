@@ -7,6 +7,7 @@ from sqlalchemy import (
     DateTime,
     Boolean
 )
+from sqlalchemy.orm import relationship
 
 from src.core.database import Base
 
@@ -23,4 +24,6 @@ class Coupons(Base):
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, default=datetime.now())
     is_archieved = Column(Boolean, default=False)
+
+    orders = relationship("Orders", back_populates="coupons")
 

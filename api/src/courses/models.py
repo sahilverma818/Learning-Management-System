@@ -23,3 +23,4 @@ class Courses(Base):
     # Define relationships
     instructor = relationship("Users", back_populates="courses")
     modules = relationship('Modules', back_populates='courses')
+    orders = relationship("Orders", back_populates="courses")

@@ -31,11 +31,11 @@ class CourseModelViewSet(BaseManager):
         """
         Create Method
         """
-        if current_user.role not in ['admin', 'lecturer']:
-            return JSONResponse(
-                content={"message": "Unautherised Access. You don't have permission to perform this operation", "success": True},
-                status_code=403
-            )
+        # if current_user.role not in ['admin', 'lecturer']:
+        #     return JSONResponse(
+        #         content={"message": "Unautherised Access. You don't have permission to perform this operation", "success": True},
+        #         status_code=403
+        #     )
         return super().create_record(data, db)
     
     def update_record(self, id: int, data: CourseUpdate, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
