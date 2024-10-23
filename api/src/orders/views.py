@@ -1,10 +1,12 @@
 import configparser
+from datetime import datetime, timedelta
 
 import qrcode
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from fastapi.responses import FileResponse, JSONResponse
 
+from src.enrollments.schemas import CreateEnrollment
 from src.core.views import BaseManager
 from src.orders.models import Orders
 from src.core.database import get_db
@@ -49,6 +51,13 @@ class OrderModelViewSet(BaseManager):
         Update Method
         """
         response = super().update_record(id, data, db)
+        enrollment = CreateEnrollment(
+            user_id=response.user_id,
+            course_id=response.course_id,
+            valid_from=datetime.now(),
+            valid_to=datetime.now() + timedelta(days=30)
+        )
+        print("Enrollment::: ", enrollment)
         return response
 
     

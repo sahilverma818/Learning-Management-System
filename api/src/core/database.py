@@ -21,5 +21,5 @@ def get_db():
     try:
         yield db
     except Exception as e:
-        return e
         db.close()
+        return str(e)
