@@ -1,7 +1,6 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
-from fastapi.responses import JSONResponse
 
 from src.auth import schemas, models, utils
 from src.core import database
@@ -12,13 +11,16 @@ bearer_scheme = HTTPBearer()
 
 def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme), db: Session = Depends(database.get_db)):
     token = credentials.credentials
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    token_data = utils.jwt_manager.verify_token(token, credentials_exception)
+    token_data = utils.jwt_manager.verify_token(token)
     user = db.query(Users).filter(Users.email == token_data.email).first()
-    if user is None or active_tokens.get(user.email) != token:
-        raise credentials_exception
+    if user is None:
+        raise HTTPException(
+            status_code=403,
+            detail="Not Authenticated"
+        )
+    elif active_tokens.get(user.email) != token:
+        raise HTTPException(
+            status_code=403,
+            detail="You have been logged out. You might have been logged on someother device. Try logging in again"
+        )
     return user

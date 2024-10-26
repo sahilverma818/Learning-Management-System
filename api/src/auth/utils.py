@@ -8,6 +8,10 @@ from fastapi.responses import JSONResponse
 from src.auth.config import settings
 from src.auth.schemas import TokenData
 
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
 class TokenAuthentication:
 
     def __init__(self):
@@ -15,13 +19,13 @@ class TokenAuthentication:
         self.ALGORITHM = settings.ALGORITHM
         self.ACCESS_TOKENS_EXPIRY_MINUTES = settings.ACCESS_TOKENS_EXPIRY_MINUTES
 
-    def create_access_token(self, data: TokenData):
+    def create_access_token(self, data: TokenData, expiry_time=None):
         try:
-            expire = datetime.now() + timedelta(minutes=self.ACCESS_TOKENS_EXPIRY_MINUTES)
+            valid_time = 2 if expiry_time else self.ACCESS_TOKENS_EXPIRY_MINUTES
+            expire = datetime.now() + timedelta(minutes=valid_time)
             data.update({
                 "exp": expire
             })
-            print("Encoded data:", data)
             encoded_jwt = jwt.encode(data, self.SECRET_KEY, algorithm=self.ALGORITHM)
             return encoded_jwt
         
@@ -31,7 +35,7 @@ class TokenAuthentication:
                 status_code=500
             )
     
-    def verify_token(self, token: str, credentials_exception: HTTPException):
+    def verify_token(self, token: str):
         try:
             payload = jwt.decode(
                 token=token,
@@ -60,3 +64,38 @@ class TokenAuthentication:
         return token_data
     
 jwt_manager = TokenAuthentication()
+
+
+def send_email(receiver, token):
+    try:
+        message = MIMEMultipart()
+        message['from'] = settings.EMAIL_ADDRESS
+        message["to"] = receiver
+        message["subject"] = "Password Reset Request"
+
+        body = f"""
+        Hello,
+
+        We received a request to reset your password. You can reset your password by clicking the link below:
+
+        http://localhost:8000/password_reset/token={token}
+
+        If you did not request a password reset, please ignore this email or contact support.
+
+        For your security, this link will expire in {settings.FORGET_PASSWORD_EXPIRY_MINUTES} minutes.
+
+        Best regards,
+        Learning Management System
+        """
+
+        message.attach(MIMEText(body, 'plain'))
+        server = smtplib.SMTP(settings.SMTP_SERVER, settings.SMTP_PORT)
+        server.starttls()
+        server.login(settings.EMAIL_ADDRESS, settings.EMAIL_PASSWORD)
+        text = message.as_string()
+        server.sendmail(settings.EMAIL_ADDRESS, receiver, text)
+
+        server.quit()
+
+    except Exception as e:
+        print(f"Failed to send email. Error: {e}")

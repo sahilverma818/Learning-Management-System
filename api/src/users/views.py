@@ -1,6 +1,8 @@
 from datetime import datetime
+from typing import Any
 
 from fastapi import APIRouter, Depends
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.collections import InstrumentedList
 
@@ -37,10 +39,24 @@ class UserModelViewSet(BaseManager):
         """
         return super().update_record(id, data, db)
     
-    def fetch_record(self, id: int, db: Session = Depends(get_db)):
+    def fetch_record(self, current_user = Depends(dependencies.get_current_user), db: Session = Depends(get_db)):
         related_field = Users.courses
-        response = super().fetch_record(id, related_field, db)
+        response = super().fetch_record(current_user.id, related_field, db)
         return response
+    
+    def fetch_all_records(
+            self,
+            db: Session = Depends(get_db),
+            params: dict[str, Any] = None,
+            page_number: int = 1,
+            page_size: int = 10,
+            current_user = Depends(dependencies.get_current_user)
+        ):
+        if current_user.role not in ['admin', 'lecturer']:
+            return JSONResponse(
+                content={"message": "Unauthorised Access. You don't have permission to view this page", "success": False}
+            )
+        return super().fetch_all_records(db, params, page_number, page_size)
     
     def _serialize(self, objects, related_field = None):
         """
@@ -55,7 +71,7 @@ class UserModelViewSet(BaseManager):
                     data[object] = str(objects[object])
                 elif isinstance(objects[object], RoleEnum):
                     data[object] = objects[object].name
-                if isinstance(objects[object], InstrumentedList):
+                elif isinstance(objects[object], InstrumentedList):
                     class_object = type(objects[object][0])
                     data[object] = self._serialize_all(objects[object], class_object)
                 else:

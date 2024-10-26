@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from fastapi import APIRouter, Depends
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.collections import InstrumentedList
 
@@ -26,16 +27,26 @@ class CourseModelViewSet(BaseManager):
         self.routes = APIRouter()
         super().__init__(Courses)
 
-    def create_record(self, data: CourseCreate, db: Session = Depends(get_db)):
+    def create_record(self, data: CourseCreate, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
         """
         Create Method
         """
+        # if current_user.role not in ['admin', 'lecturer']:
+        #     return JSONResponse(
+        #         content={"message": "Unautherised Access. You don't have permission to perform this operation", "success": True},
+        #         status_code=403
+        #     )
         return super().create_record(data, db)
     
-    def update_record(self, id: int, data: CourseUpdate, current_user: UserUpdate = Depends(get_current_user), db: Session = Depends(get_db)):
+    def update_record(self, id: int, data: CourseUpdate, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
         """
         Update Method
         """
+        if current_user.role not in ['admin', 'lecturer']:
+            return JSONResponse(
+                content={"message": "Unautherised Access. You don't have permission to perform this operation", "success": True},
+                status_code=403
+            )
         return super().update_record(id, data, db)
     
     def fetch_record(self, id: int, db: Session = Depends(get_db)):
