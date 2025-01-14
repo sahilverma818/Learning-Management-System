@@ -18,16 +18,26 @@ class TokenAuthentication:
         self.SECRET_KEY = settings.SECRET_KEY
         self.ALGORITHM = settings.ALGORITHM
         self.ACCESS_TOKENS_EXPIRY_MINUTES = settings.ACCESS_TOKENS_EXPIRY_MINUTES
+        self.REFRESH_TOKEN_EXPIRY_MINUTES = settings.REFRESH_TOKENS_EXPIRY_MINUTES
 
     def create_access_token(self, data: TokenData, expiry_time=None):
         try:
             valid_time = 2 if expiry_time else self.ACCESS_TOKENS_EXPIRY_MINUTES
-            expire = datetime.now() + timedelta(minutes=valid_time)
+            refresh_token_valid_time = 300 if expiry_time else self.REFRESH_TOKEN_EXPIRY_MINUTES
+            access_expire = datetime.now() + timedelta(minutes=valid_time)
             data.update({
-                "exp": expire
+                "exp": access_expire
             })
-            encoded_jwt = jwt.encode(data, self.SECRET_KEY, algorithm=self.ALGORITHM)
-            return encoded_jwt
+            access_encoded_jwt = jwt.encode(data, self.SECRET_KEY, algorithm=self.ALGORITHM)
+            data['exp'] = datetime.now() + timedelta(minutes=self.REFRESH_TOKEN_EXPIRY_MINUTES)
+            refresh_encoded_jwt = jwt.encode(data, self.SECRET_KEY, algorithm=self.ALGORITHM)
+            context = {
+                "access_token": access_encoded_jwt,
+                "refresh_token": refresh_encoded_jwt,
+                "token_type": "bearer"
+            }
+            return context
+            
         
         except Exception as e:
             return JSONResponse(
@@ -56,9 +66,9 @@ class TokenAuthentication:
             token_data = TokenData(email=user_email, id=user_id, role=user_role)
 
         except JWTError as e:
-            return JSONResponse(
-                content={"message": f"Authentication Error: {str(e)}", "success": False},
-                status_code=500
+            raise HTTPException(
+                detail="Invalid token",
+                status_code=403
             )
         
         return token_data

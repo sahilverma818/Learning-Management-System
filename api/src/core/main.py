@@ -1,8 +1,6 @@
-import configparser
-
-import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.core.database import engine, Base
 from src.auth.router import auth_router
@@ -16,28 +14,65 @@ from src.contents.router import (
 )
 from src.coupons.router import coupon_router
 
+
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
 
+app = FastAPI(
+    title='Learning Management System',
+    version='1.0.0'
+)
+
+# added middlewares
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+    allow_credentials=True,
+    expose_headers=["*"]
+)
+
+# mounting static directories
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.get("/")
-def read_root():
-    return {
-        "success" : True,
-        "message" : "API has been established successfully"
-    }
+# routings
+app.include_router(
+    auth_router,
+    prefix="/auth"
+)
 
+app.include_router(
+    user_router,
+    prefix="/users"
+)
 
-app.include_router(auth_router, prefix="/auth")
-app.include_router(user_router, prefix="/users")
-app.include_router(course_router, prefix="/courses")
-app.include_router(lecture_router, prefix="/lectures")
-app.include_router(module_router, prefix="/modules")
-app.include_router(coupon_router, prefix='/coupons')
-app.include_router(order_router, prefix="/orders")
-app.include_router(enrollment_router, prefix="/enrollments")
+app.include_router(
+    course_router,
+    prefix="/courses"
+)
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+app.include_router(
+    lecture_router,
+    prefix="/lectures"
+)
+
+app.include_router(
+    module_router,
+    prefix="/modules"
+)
+
+app.include_router(
+    coupon_router,
+    prefix='/coupons'
+)
+
+app.include_router(
+    order_router,
+    prefix="/orders"
+)
+
+app.include_router(
+    enrollment_router,
+    prefix="/enrollments"
+)

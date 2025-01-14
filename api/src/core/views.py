@@ -1,13 +1,14 @@
-from typing import Dict, Any, List
-from datetime import datetime
+from typing import Dict, Any
+from datetime import datetime as dt
 
-from fastapi import APIRouter, Depends
+from fastapi import Depends
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.orm.collections import InstrumentedList
 
 from src.auth.dependencies import get_current_user
 from src.core.database import get_db
+from src.core.logger import *
 
 class BaseManager:
     """
@@ -43,10 +44,10 @@ class BaseManager:
         data = {}
         for object in objects:
             if hasattr(self.model, object):
-                if isinstance(objects[object], InstrumentedList):
+                if isinstance(objects[object], InstrumentedList) and objects[object]:
                     class_object = type(objects[object][0])
                     data[object] = self._serialize_all(objects[object], class_object)
-                elif isinstance(objects[object], datetime):
+                elif isinstance(objects[object], dt):
                     data[object] = str(objects[object])
                 else:
                     data[object] = objects[object]
@@ -58,7 +59,7 @@ class BaseManager:
             obj_dict = {}
             for data in object.__dict__:
                 if hasattr(related_field, data):
-                    if isinstance(object.__dict__[data], datetime):
+                    if isinstance(object.__dict__[data], dt):
                         obj_dict[data] = str(object.__dict__[data])
                     else:
                         obj_dict[data] = object.__dict__[data]
@@ -75,7 +76,12 @@ class BaseManager:
         return db_object
 
     
-    def fetch_record(self, id: int, related_field=None, db: Session = Depends(get_db)):
+    def fetch_record(
+        self,
+        id: int,
+        related_field=None,
+        db: Session = Depends(get_db)
+    ):
         """
         Get Method
         """
@@ -103,11 +109,17 @@ class BaseManager:
                 status_code=500
             )
         
-    def fetch_all_records(self, db: Session = Depends(get_db), params: Dict[str, Any]=None, page_number: int=1, page_size: int = 10):
+    def fetch_all_records(
+        self,
+        db: Session = Depends(get_db),
+        params: Dict[str, Any]=None,
+        page_number: int=1,
+        page_size: int = 10
+    ):
         """
         Get all method
         """
-        page_number = 0 if page_number < 0 else page_number
+        page_number = 1 if page_number < 0 else page_number
         page_size = 10 if page_size <= 0 else page_size
         
         skip = (page_number - 1)*page_size 
@@ -134,8 +146,12 @@ class BaseManager:
             db_obj = self.model(**data)
             db_obj = self._commit(db, db_obj)
             return db_obj
+        
         except Exception as e:
-            print("Error in generating response:--->>>>\n\n",e)
+            return JSONResponse(
+                content={"message": "Failed to create record", "success": False},
+                status_code=500
+            )
                 
     def update_record(self, id: int, data, db: Session = Depends(get_db)):
         """
@@ -148,11 +164,17 @@ class BaseManager:
         object_data = self._commit(db, object_data)
         return object_data
 
-    def delete_record(self, id: int, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    def delete_record(
+        self,
+        id: int,
+        current_user = Depends(get_current_user),
+        db: Session = Depends(get_db)
+    ):
         """
         Delete Method
         """
-        db.delete(current_user)
+        record = db.query(self.model).get(id)
+        db.delete(record)
         db.commit()
         return JSONResponse(
             content={"message": "Record deleted successfully", "success": True},

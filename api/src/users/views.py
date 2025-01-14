@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime as dt
 from typing import Any
 
 from fastapi import APIRouter, Depends
@@ -13,6 +13,7 @@ from src.auth.services import hash_password
 from src.users.models import Users
 from src.users import schemas
 from src.users.utils import RoleEnum
+from src.core.logger import *
 
 
 class UserModelViewSet(BaseManager):
@@ -30,6 +31,7 @@ class UserModelViewSet(BaseManager):
         """
         Create Method
         """
+        logger.info("Registering new user")
         data.hashed_password = hash_password(data.hashed_password)
         return super().create_record(data, db)
     
@@ -46,13 +48,13 @@ class UserModelViewSet(BaseManager):
     
     def fetch_all_records(
             self,
-            db: Session = Depends(get_db),
             params: dict[str, Any] = None,
             page_number: int = 1,
             page_size: int = 10,
-            current_user = Depends(dependencies.get_current_user)
+            current_user = Depends(dependencies.get_current_user),
+            db: Session = Depends(get_db)
         ):
-        if current_user.role not in ['admin', 'lecturer']:
+        if current_user.role.name not in ['admin', 'lecturer']:
             return JSONResponse(
                 content={"message": "Unauthorised Access. You don't have permission to view this page", "success": False}
             )
@@ -67,11 +69,11 @@ class UserModelViewSet(BaseManager):
             if hasattr(self.model, object):
                 if object == 'hashed_password':
                     pass
-                elif isinstance(objects[object], datetime):
+                elif isinstance(objects[object], dt):
                     data[object] = str(objects[object])
                 elif isinstance(objects[object], RoleEnum):
                     data[object] = objects[object].name
-                elif isinstance(objects[object], InstrumentedList):
+                elif isinstance(objects[object], InstrumentedList) and objects[object]:
                     class_object = type(objects[object][0])
                     data[object] = self._serialize_all(objects[object], class_object)
                 else:

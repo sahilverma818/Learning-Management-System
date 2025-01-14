@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 
 class GenerateQRSchema(BaseModel):
-    course_id: int
-    coupon_id: int
+    course_id: str
+    coupon_id: str
 
 
 class CreateOrder(BaseModel):

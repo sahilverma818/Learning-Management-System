@@ -6,6 +6,8 @@ from src.auth import schemas, utils
 from src.users import models
 from src.core.database import get_db
 from src.auth.config import settings
+from src.core.logger import *
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 active_tokens = {}
@@ -16,6 +18,7 @@ def verify_password(plain_password, hashed_password):
 
 
 def hash_password(password: str):
+    logger.info("Hasing Password")
     return pwd_context.hash(password)
 
 
@@ -35,13 +38,16 @@ def login(db, form_data: schemas.UserCreate):
             content={"message": "User not found", "success": False},
             status_code=404
         )
-    access_token = utils.jwt_manager.create_access_token(data={
+    tokens = utils.jwt_manager.create_access_token(data={
         "user_email": user.email,
         "user_id": user.id,
         "user_role": user.role.name
     })
-    active_tokens[user.email] = access_token
-    return JSONResponse({"access_token": access_token, "token_type": "bearer"})
+    active_tokens[user.email] = tokens['access_token']
+    return JSONResponse(
+        content=tokens,
+        status_code=200
+    )
 
 
 def reset_password(db, form_data):
@@ -74,9 +80,19 @@ def password_reset_request_api(db, email):
                 content={"message": "Password reset link has been sent to your mail", "success": True},
                 status_code=200
             )
+        
+        else:
+            return JSONResponse(
+                status_code=404,
+                content={
+                    "message": "No user found with that email address. Please check and retry.",
+                    "success": True
+                }
+            )
     except Exception as e:
         db.rollback()
         return JSONResponse(
             content={"message": f"Unable to send email {str(e)}", "success": False},
             status_code=500
         )
+    

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime as dt
 
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
@@ -31,18 +31,18 @@ class CourseModelViewSet(BaseManager):
         """
         Create Method
         """
-        # if current_user.role not in ['admin', 'lecturer']:
-        #     return JSONResponse(
-        #         content={"message": "Unautherised Access. You don't have permission to perform this operation", "success": True},
-        #         status_code=403
-        #     )
+        if current_user.role.name not in ['admin', 'lecturer']:
+            return JSONResponse(
+                content={"message": "Unautherised Access. You don't have permission to perform this operation", "success": True},
+                status_code=403
+            )
         return super().create_record(data, db)
     
     def update_record(self, id: int, data: CourseUpdate, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
         """
         Update Method
         """
-        if current_user.role not in ['admin', 'lecturer']:
+        if current_user.role.name not in ['admin', 'lecturer']:
             return JSONResponse(
                 content={"message": "Unautherised Access. You don't have permission to perform this operation", "success": True},
                 status_code=403
@@ -59,7 +59,7 @@ class CourseModelViewSet(BaseManager):
             obj_dict = {}
             for data in object.__dict__:
                 if hasattr(related_field, data):
-                    if isinstance(object.__dict__[data], datetime):
+                    if isinstance(object.__dict__[data], dt):
                         obj_dict[data] = str(object.__dict__[data])
                     else:
                         obj_dict[data] = object.__dict__[data]
@@ -73,9 +73,9 @@ class CourseModelViewSet(BaseManager):
         data = {}
         for object in objects:
             if hasattr(self.model, object):
-                if isinstance(objects[object], datetime):
+                if isinstance(objects[object], dt):
                     data[object] = str(objects[object])
-                elif isinstance(objects[object], InstrumentedList):
+                elif isinstance(objects[object], InstrumentedList) and objects[object]:
                     class_object = type(objects[object][0])
                     data[object] = self._serialize_all(objects[object], class_object)
                 else:
