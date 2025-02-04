@@ -1,0 +1,71 @@
+/* Main container */
+.info_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 15px 20px;
+}
+
+/* Elegant quote styling */
+.info {
+    max-width: 600px;
+    font-style: italic;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #333;
+    position: relative;
+}
+
+/* Slight emphasis using pseudo-elements */
+.info h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.info h2::before {
+    content: "“";
+    font-size: 2rem;
+    color: #007bff;
+    position: absolute;
+    left: -20px;
+    top: -5px;
+}
+
+.info h2::after {
+    content: "”";
+    font-size: 2rem;
+    color: #007bff;
+    position: absolute;
+    right: -20px;
+    top: -5px;
+}
+
+/* Subtle paragraph styling */
+.info p {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+/* Simple, clean button */
+.info button {
+    background: none;
+    border: 2px solid #007bff;
+    color: #007bff;
+    font-size: 0.9rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    margin-top: 10px;
+}
+
+.info button:hover {
+    background: #007bff;
+    color: #fff;
+}

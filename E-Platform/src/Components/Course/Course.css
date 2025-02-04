@@ -1,0 +1,132 @@
+/* Main container for all courses */
+.course_container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px 20px;
+}
+
+/* Individual course card */
+.course_card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    width: 280px; /* Ensures uniform card size */
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    height: 100%; /* Makes all cards the same height */
+}
+
+/* Ensure equal height for all cards inside flex container */
+.course_card {
+    display: flex;
+    flex-direction: column;
+    justify-content:space-between;
+}
+
+/* Course image */
+.course_img {
+    width: 100%;
+    height: 100px;
+    max-height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Course name */
+.course_name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #222;
+    margin: 8px 0;
+    min-height: 50px; /* Ensures consistency */
+}
+
+/* Price */
+.course_price {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ff6f61;
+}
+
+/* Standard & Icon */
+.course_standard {
+    font-size: 1rem;
+    color: #666;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+/* Icon */
+.analytic {
+    font-size: 1.2rem;
+    color: #007bff;
+}
+
+/* Button */
+.course_button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    width: 100%;
+    max-width: 180px;
+    margin-top: auto; /* Pushes the button to the bottom */
+}
+
+/* Hover effect */
+.course_button:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .course_card {
+        width: 260px;
+    }
+}
+
+@media (max-width: 768px) {
+    .course_container {
+        justify-content: center;
+    }
+    .course_card {
+        width: 90%;
+        max-width: 320px;
+    }
+}
+
+@media (max-width: 480px) {
+    .course_card {
+        padding: 15px;
+    }
+    .course_name {
+        font-size: 1.2rem;
+        min-height: 40px; /* Adjust for smaller screens */
+    }
+    .course_price {
+        font-size: 1rem;
+    }
+    .course_standard {
+        font-size: 0.9rem;
+    }
+    .course_button {
+        font-size: 0.9rem;
+        padding: 8px 14px;
+    }
+}
