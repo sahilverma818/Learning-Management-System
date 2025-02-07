@@ -13,8 +13,6 @@ from src.courses.schemas import (
     CourseCreate,
     CourseUpdate
 )
-from src.users.schemas import UserUpdate
-
 
 class CourseModelViewSet(BaseManager):
     """
