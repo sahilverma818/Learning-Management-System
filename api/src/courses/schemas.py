@@ -17,3 +17,4 @@ class CourseCreate(BaseModel):
     start_date: datetime
     duration: int
     fees: float
+    image: Optional[str]

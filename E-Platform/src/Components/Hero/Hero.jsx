@@ -13,7 +13,7 @@ const Hero = () => {
                 <div className="btn">
                     <button className="cta_button"> Explore Courses </button>
                 </div>
-                <img src={classroom} alt="" srcset="" />
+                <img src={classroom} alt="" />
             </div>
         </div>
     )

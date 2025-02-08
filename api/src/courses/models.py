@@ -16,6 +16,7 @@ class Courses(Base):
     start_date = Column(DateTime)
     duration = Column(Integer)
     fees = Column(Float)
+    image = Column(String)
     created_at = Column(DateTime, default=datetime.now())
     last_enrollment_date = Column(DateTime)
     updated_at = Column(DateTime, default=datetime.now())

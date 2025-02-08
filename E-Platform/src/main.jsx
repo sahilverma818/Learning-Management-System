@@ -10,11 +10,9 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import CourseContextProvider from './Components/CourseContext/CourseContext.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <CourseContextProvider>
       <Router>
         <StrictMode>
           <App />
         </StrictMode>
       </Router>
-  </CourseContextProvider>
 )

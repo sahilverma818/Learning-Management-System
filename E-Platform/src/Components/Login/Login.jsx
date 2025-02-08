@@ -36,7 +36,7 @@ const Login = () => {
         console.log(response.data);
       };
     } catch {
-      console.log('Exception')
+      console.log('Exception:', response.data)
     }
   }
 

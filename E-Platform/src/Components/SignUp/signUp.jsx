@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import './signUp.css'
+import axios from "axios";
 
 const SignUp = () => {
 
@@ -12,6 +13,22 @@ const SignUp = () => {
     const handleSubmit = async(e) => {
         e.preventDefault();
         console.log(firstname, lastname, email, password, role);
+        try {
+            response = await axios.post('http://localhost:8000/users/post/', {
+                'email': email,
+                'hashed_password': password,
+                'role': role,
+                'firstname': firstname,
+                'lastname': lastname
+            })
+            if (response.status_code == 200) {
+                console.log('User registration successful')
+            } else {
+                console.log('Error: ',response.data)
+            }
+        } catch {
+            console.log('Error Occured')
+        }
         
     }
 
