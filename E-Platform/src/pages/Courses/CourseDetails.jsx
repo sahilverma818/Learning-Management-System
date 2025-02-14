@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axios from "axios";
 import './CourseDetails.css'
 
 import {coursesData} from '../../data';
@@ -10,29 +11,47 @@ import { useParams } from "react-router-dom";
 const CourseDetails = () => {
     const {id} = useParams();
 
-    const course = coursesData.find(course=> {
-        return course.id === parseInt(id);
-    })
+    useEffect(() => {
+        const fetchCourse = async () => {
+            try {
+                const course = await axios.post(`http://localhost:8000/courses/get/${id}`, {
+                    'id': id
+                })
+
+                if (course.status === 200) {
+                    console.log(course.data)
+                }
+            } catch (error) {
+
+            };
+        }
+        fetchCourse();
+    }, [id])
+
+    // const course = coursesData.find(course=> {
+    //     return course.id === parseInt(id);
+    // })
+
 
     return (
         <div>
             <div className="course_details">
                 <div className="details_top">
                     <div className="details_left">
-                        <h2 className="name"> {course.name} </h2>
+                        {/* <h2 className="name"> {course.name} </h2>
                         <p className="desc"> {course.courseDetail.description} </p>
                         <p className="lang"> {course.courseDetail.language} </p>
-                        <p className="date"> {course.courseDetail.date} </p>
+                        <p className="date"> {course.courseDetail.date} </p> */}
                         <div className="price_container">
-                            <h3 className="price">Price: ${course.price}</h3>
+                            {/* <h3 className="price">Price: ${course.price}</h3> */}
                             <button> Buy Now !! </button>
                         </div>
                     </div>
-                    <div className="details_right">
+                    {/* <div className="details_right">
                         <img src={course.image} alt="course_img" className="course_img" />
-                    </div>
+                    </div> */}
                 </div>
-                <div className="course_journey">
+                {/* <div className="course_journey">
                     <h2> Curriculum </h2>
                     <fieldset className="field_container">
                         <legend className="phase"> Phase 01 </legend>
@@ -78,7 +97,7 @@ const CourseDetails = () => {
                             <li> {course.phase1.phaseList4} </li>
                         </ul>
                     </fieldset>
-                </div>
+                </div> */}
             </div>
         </div>
     )

@@ -159,7 +159,7 @@ class BaseManager:
         except Exception as e:
             return JSONResponse(
                 content={"message": "Failed to create record", "success": False},
-                status_code=500
+                status_code=400
             )
                 
     def update_record(self, id: int, data, db: Session = Depends(get_db)):

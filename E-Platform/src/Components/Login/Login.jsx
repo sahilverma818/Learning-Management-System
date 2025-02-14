@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { toast } from "react-toastify";
 import './Login.css'
 
 const Login = () => {
+
+  const navigate = useNavigate();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,10 +37,17 @@ const Login = () => {
       });
 
       if (response.status === 200) {
-        console.log(response.data);
+        localStorage.setItem('access_token', response.data.access_token);
+        localStorage.setItem('refresh_token', response.data.refresh_token);
+        toast.success('Login successful', {
+          onClose: () => {
+            navigate('/')
+          }
+        })
+
       };
-    } catch {
-      console.log('Exception:', response.data)
+    } catch (error){
+      toast.error(error.response.data.message)
     }
   }
 
