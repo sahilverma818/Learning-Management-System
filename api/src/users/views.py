@@ -42,7 +42,10 @@ class UserModelViewSet(BaseManager):
         return super().update_record(id, data, db)
     
     def fetch_record(self, current_user = Depends(dependencies.get_current_user), db: Session = Depends(get_db)):
-        related_field = Users.courses
+        if current_user.role.name == 'lecturer':
+            related_field = Users.courses
+        else:
+            related_field = Users.enrollments
         response = super().fetch_record(current_user.id, related_field, db)
         return response
     

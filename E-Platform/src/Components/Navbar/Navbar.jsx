@@ -20,7 +20,9 @@ const Navbar = () => {
                         <ul>
                             <li> Courses </li>
                             <li> Contacts </li>
-                            <li>  Blogs </li>
+                            <Link to={'profile'}>
+                                <li>  Profile </li>
+                            </Link>
                         </ul>
                     </div>
                     <div className="nav_button">

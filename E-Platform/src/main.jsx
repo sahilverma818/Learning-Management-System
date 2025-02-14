@@ -7,7 +7,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 // export browser router
 import { BrowserRouter as Router } from 'react-router-dom'
-import CourseContextProvider from './Components/CourseContext/CourseContext.jsx'
 
 createRoot(document.getElementById('root')).render(
       <Router>
