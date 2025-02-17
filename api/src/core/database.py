@@ -11,7 +11,14 @@ db_name = config['database']['db_name']
 
 SQLALCHEMY_DATABASE_URL = f"sqlite:///./{db_name}"
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
+    pool_size=10,         
+    max_overflow=20,      
+    pool_timeout=60,
+    pool_recycle=1800
+)
+
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 Base = declarative_base()

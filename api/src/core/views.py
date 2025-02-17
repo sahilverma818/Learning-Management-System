@@ -26,7 +26,7 @@ class BaseManager:
         """
         Get Routes Method
         """
-        self.routes.add_api_route('/get', self.fetch_record, methods=['POST'], response_model=None)
+        self.routes.add_api_route('/get/{id}', self.fetch_record, methods=['POST'], response_model=None)
         self.routes.add_api_route('/post', self.create_record, methods=['POST'], response_model=None)
         self.routes.add_api_route("/list", self.fetch_all_records, methods=["POST"], response_model=None)
         self.routes.add_api_route("/update", self.update_record, methods=["PATCH"], response_model=None)
