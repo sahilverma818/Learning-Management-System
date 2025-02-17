@@ -1,15 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import './CourseDetails.css'
-
-import {coursesData} from '../../data';
-
-// import params
 import { useParams } from "react-router-dom";
+import Loader from "../../Components/Loader/Loader";
 
 
 const CourseDetails = () => {
     const {id} = useParams();
+
+    const [courseDetail, setCourseDetail] = useState()
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -19,37 +18,36 @@ const CourseDetails = () => {
                 })
 
                 if (course.status === 200) {
-                    console.log(course.data)
+                    setCourseDetail(course.data.data)
                 }
             } catch (error) {
-
+                
             };
         }
         fetchCourse();
     }, [id])
 
-    // const course = coursesData.find(course=> {
-    //     return course.id === parseInt(id);
-    // })
-
+    if (!courseDetail) {
+        return <Loader />;
+    }
 
     return (
         <div>
             <div className="course_details">
                 <div className="details_top">
                     <div className="details_left">
-                        {/* <h2 className="name"> {course.name} </h2>
-                        <p className="desc"> {course.courseDetail.description} </p>
-                        <p className="lang"> {course.courseDetail.language} </p>
-                        <p className="date"> {course.courseDetail.date} </p> */}
+                        <h2 className="name"> {courseDetail.course_name} </h2>
+                        <p className="desc"> {courseDetail.course_description} </p>
+                        <p className="lang"> English / Hindi </p>
+                        <p className="date"> {Date(courseDetail.start_date)} </p>
                         <div className="price_container">
-                            {/* <h3 className="price">Price: ${course.price}</h3> */}
+                            <h3 className="price">Price: ${courseDetail.fees}</h3>
                             <button> Buy Now !! </button>
                         </div>
                     </div>
-                    {/* <div className="details_right">
-                        <img src={course.image} alt="course_img" className="course_img" />
-                    </div> */}
+                    <div className="details_right">
+                        <img src={`http://localhost:8000/${courseDetail.image}`} alt="course_img" className="course_img" />
+                    </div>
                 </div>
                 {/* <div className="course_journey">
                     <h2> Curriculum </h2>

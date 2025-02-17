@@ -22,9 +22,9 @@ const ProfilePage = () => {
                 }
             });
             if (res.status === 200) {
-                console.log(res.data.data);
                 setUserData(res.data.data);
-                console.log("useState Data:", userData);
+                console.log("****", userData);
+                
             }
         } catch (error) {
             console.error('Error fetching user data:', error);
@@ -34,6 +34,7 @@ const ProfilePage = () => {
     React.useEffect(() => {
         fetchUserData();
     }, []);
+
     return (
         <div>
             <div className="profile-wrapper">
@@ -43,19 +44,19 @@ const ProfilePage = () => {
                         <div className="user-details">
                             <div className="detail-group">
                                 <label>First Name:</label>
-                                <span>John</span>
+                                <span>{userData.firstname}</span>
                             </div>
                             <div className="detail-group">
                                 <label>Last Name:</label>
-                                <span>Doe</span>
+                                <span>{userData.lastname}</span>
                             </div>
                             <div className="detail-group">
                                 <label>Email:</label>
-                                <span>john.doe@example.com</span>
+                                <span>{userData.email}</span>
                             </div>
                             <div className="detail-group">
                                 <label>Role:</label>
-                                <span>Student</span>
+                                <span>{userData.role}</span>
                             </div>
                         </div>
                     </div>
@@ -66,7 +67,8 @@ const ProfilePage = () => {
                     <div className="dashboard-stats">
                         <div className="stat-card">
                             <h4>Enrolled Courses</h4>
-                            <span className="stat-number">5</span>
+                            <span className="stat-number">{userData.courses && userData.courses.length}</span>
+                            
                         </div>
                         <div className="stat-card">
                             <h4>Completed Courses</h4>

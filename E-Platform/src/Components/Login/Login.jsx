@@ -14,19 +14,15 @@ const Login = () => {
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    console.log(emailRegex.test(email))
     return emailRegex.test(email);
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("")
-    console.log('Email:', email);
-    console.log('Password:', password);
 
     if (!validateEmail(email)) {
       setError('Email is not valid')
-      console.log('Error: ', error)
       return;
     }
 

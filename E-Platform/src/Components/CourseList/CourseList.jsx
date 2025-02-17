@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Course from "../Course/Course";
+import { toast } from "react-toastify";
 import axios from "axios";
 import "./CourseList.css";
+import Loader from "../Loader/Loader";
 
 const CourseList = () => {
     const [courses, setCourses] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -15,25 +15,20 @@ const CourseList = () => {
                 const response = await axios.post("http://localhost:8000/courses/list");
 
                 if (response.status === 200) {
-                    console.log(response.data);
                     setCourses(response.data);
-                } else {
-                    console.error("Error occurred:", response.data);
-                    setError("Error fetching courses");
                 }
             } catch (error) {
+                toast(`Exception error: ${error}`)
                 console.error("Exception error:", error);
-                setError("Failed to load courses");
-            } finally {
-                setLoading(false);
             }
         };
 
         fetchCourses();
-    }, []); // ✅ Runs only once when component mounts
+    }, []); 
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    if (!courses) {
+        return <Loader/>
+    }
 
     return (
         <div className="course_wrapper">
