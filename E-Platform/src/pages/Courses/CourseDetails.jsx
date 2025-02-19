@@ -3,17 +3,19 @@ import axios from "axios";
 import './CourseDetails.css'
 import { useParams } from "react-router-dom";
 import Loader from "../../Components/Loader/Loader";
+import LectureInformation from "../../Components/LectureInformation/LectureInformation";
 
 
 const CourseDetails = () => {
     const {id} = useParams();
 
     const [courseDetail, setCourseDetail] = useState()
+    const [viewIndex, setViewIndex] = useState(false);
 
     useEffect(() => {
         const fetchCourse = async () => {
             try {
-                const course = await axios.post(`http://localhost:8000/courses/get/${id}`, {
+                const course = await axios.post(`${process.env.REACT_APP_API_URL}courses/get/${id}`, {
                     'id': id
                 })
 
@@ -31,6 +33,14 @@ const CourseDetails = () => {
         return <Loader />;
     }
 
+    const handleToggle = (index) => {
+        setViewIndex(prevState => ({
+            ...prevState,
+            [index]: !prevState[index]  // Toggle visibility for the specific module
+        }));
+    };
+    
+
     return (
         <div>
             <div className="course_details">
@@ -41,7 +51,7 @@ const CourseDetails = () => {
                         <p className="lang"> English / Hindi </p>
                         <p className="date"> {Date(courseDetail.start_date)} </p>
                         <div className="price_container">
-                            <h3 className="price">Price: ${courseDetail.fees}</h3>
+                            <h3 className="price">Price: Rs. {courseDetail.fees}</h3>
                             <button> Buy Now !! </button>
                         </div>
                     </div>
@@ -49,53 +59,23 @@ const CourseDetails = () => {
                         <img src={`http://localhost:8000/${courseDetail.image}`} alt="course_img" className="course_img" />
                     </div>
                 </div>
-                {/* <div className="course_journey">
-                    <h2> Curriculum </h2>
-                    <fieldset className="field_container">
-                        <legend className="phase"> Phase 01 </legend>
-                        <h3 className="p_name">{course.phase1.phaseName}</h3>
-                        <ul>
-                            <li> {course.phase1.phaseList} </li>
-                            <li> {course.phase1.phaseList1} </li>
-                            <li> {course.phase1.phaseList2} </li>
-                            <li> {course.phase1.phaseList3} </li>
-                            <li> {course.phase1.phaseList4} </li>
-                        </ul>
-                    </fieldset>
-                    <fieldset className="field_container">
-                        <legend className="phase"> Phase 01 </legend>
-                        <h3 className="p_name">{course.phase1.phaseName}</h3>
-                        <ul>
-                            <li> {course.phase1.phaseList} </li>
-                            <li> {course.phase1.phaseList1} </li>
-                            <li> {course.phase1.phaseList2} </li>
-                            <li> {course.phase1.phaseList3} </li>
-                            <li> {course.phase1.phaseList4} </li>
-                        </ul>
-                    </fieldset>
-                    <fieldset className="field_container">
-                        <legend className="phase"> Phase 01 </legend>
-                        <h3 className="p_name">{course.phase1.phaseName}</h3>
-                        <ul>
-                            <li> {course.phase1.phaseList} </li>
-                            <li> {course.phase1.phaseList1} </li>
-                            <li> {course.phase1.phaseList2} </li>
-                            <li> {course.phase1.phaseList3} </li>
-                            <li> {course.phase1.phaseList4} </li>
-                        </ul>
-                    </fieldset>
-                    <fieldset className="field_container">
-                        <legend className="phase"> Phase 01 </legend>
-                        <h3 className="p_name">{course.phase1.phaseName}</h3>
-                        <ul>
-                            <li> {course.phase1.phaseList} </li>
-                            <li> {course.phase1.phaseList1} </li>
-                            <li> {course.phase1.phaseList2} </li>
-                            <li> {course.phase1.phaseList3} </li>
-                            <li> {course.phase1.phaseList4} </li>
-                        </ul>
-                    </fieldset>
-                </div> */}
+                <div className="course_journey">
+                    <h2> Modules </h2>
+                    {courseDetail.modules && courseDetail.modules.map((module, index) => (
+                        <fieldset className="field_container">
+                            <legend className="phase"> Phase {index + 1} </legend>
+                            <h3 className="p_name"> { module.module_title } </h3>
+                            <p className="p_description"> { module.module_description } </p>
+                            <button className="p_lectureview" onClick={() => handleToggle(index)}>
+                                { viewIndex[index] ? "Hide Lectures" : "View Lectures" }
+                            </button>
+
+                            {viewIndex[index] && (
+                                <LectureInformation moduleId = {module.id}/>
+                            )}
+                        </fieldset>
+                    ))}
+                </div>
             </div>
         </div>
     )

@@ -87,10 +87,11 @@ class BaseManager:
         Get Method
         """
         try:
+            objects = self._get_queryset(db)
             if related_field:
-                objects = self._get_queryset(db).options(joinedload(related_field)).get(id)
-            else:
-                objects = self._get_queryset(db).get(id)
+                objects = objects.options(joinedload(related_field))
+            
+            objects = objects.get(id)
 
             if objects:
                 objects = self._serialize(objects.__dict__, related_field)

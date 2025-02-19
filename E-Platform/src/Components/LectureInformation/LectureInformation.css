@@ -1,0 +1,72 @@
+.lecture-container {
+    width: 100%;
+    margin: 20px auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: opacity 3s ease-in-out, transform 3s ease-in-out;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.lecture-container.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+.lecture-header {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.lecture-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Arial', sans-serif;
+    background: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.lecture-table thead {
+    background: #007bff;
+    color: white;
+}
+
+.lecture-table th, 
+.lecture-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.lecture-table th {
+    font-size: 16px;
+}
+
+.lecture-table tbody tr:nth-child(even) {
+    background: #f2f2f2;
+}
+
+.lecture-table tbody tr:hover {
+    background: #ddd;
+}
+
+.view-btn {
+    padding: 8px 12px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.view-btn:hover {
+    background: #218838;
+}

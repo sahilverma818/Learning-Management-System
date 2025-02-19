@@ -12,7 +12,7 @@ const CourseList = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axios.post("http://localhost:8000/courses/list");
+                const response = await axios.post(`${process.env.REACT_APP_API_URL}courses/list`);
 
                 if (response.status === 200) {
                     setCourses(response.data);

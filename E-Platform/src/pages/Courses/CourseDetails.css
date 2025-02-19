@@ -1,105 +1,73 @@
 /* CourseDetails.css */
 
-/* Main Course Details Container */
 .course_details {
     max-width: 1200px;
     margin: 40px auto;
     padding: 20px;
-    background: #ffffff;
+    background: #fff;
     border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Top Section (Course Name, Description, Image) */
 .details_top {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 30px;
-    padding-bottom: 30px;
-    border-bottom: 2px solid #ddd;
+    gap: 20px;
 }
 
-/* Left Section (Text Content) */
 .details_left {
     flex: 1;
     padding: 20px;
 }
 
-/* Course Name */
 .name {
-    font-size: 2rem;
-    font-weight: 800;
-    color: #222;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    position: relative;
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
 }
 
-/* Underline Effect for Course Name */
-.name::after {
-    content: "";
-    width: 60px;
-    height: 4px;
-    background: linear-gradient(to right, #007bff, #ff6f61);
-    position: absolute;
-    left: 0;
-    bottom: -5px;
-    border-radius: 2px;
-}
-
-/* Description */
 .desc {
-    font-size: 1.1rem;
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 15px;
+    font-size: 16px;
+    color: #666;
+    margin: 10px 0;
 }
 
-/* Additional Course Details */
-.lang,
-.date {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #444;
-    margin-bottom: 5px;
+.lang, .date {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 10px;
 }
 
-/* Price Section */
 .price_container {
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
-/* Price */
 .price {
-    font-size: 1.4rem;
+    font-size: 22px;
     font-weight: bold;
-    color: #ff6f61;
+    color: #28a745;
 }
 
-/* Buy Now Button */
-.price_container button {
+button {
+    padding: 10px 15px;
     background: #007bff;
     color: #fff;
     border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.3s ease-in-out;
+    font-size: 16px;
+    transition: background 0.3s;
 }
 
-.price_container button:hover {
+button:hover {
     background: #0056b3;
-    transform: scale(1.05);
 }
 
-/* Right Section (Course Image) */
 .details_right {
     flex: 1;
     display: flex;
@@ -110,232 +78,70 @@
     max-width: 100%;
     height: auto;
     border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Curriculum Section */
 .course_journey {
     margin-top: 40px;
-    padding: 20px;
 }
 
-/* Curriculum Title */
-.course_journey h2 {
-    font-size: 1.8rem;
-    font-weight: 800;
-    text-align: center;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    color: #222;
-    position: relative;
-}
-
-/* Underline Effect for Curriculum Title */
-.course_journey h2::after {
-    content: "";
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(to right, #007bff, #ff6f61);
-    position: absolute;
-    left: 50%;
-    bottom: -5px;
-    transform: translateX(-50%);
-    border-radius: 2px;
-}
-
-/* Curriculum Phase Containers */
-.field_container {
-    border: none; /* Remove default fieldset border */
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease-in-out;
-    position: relative;
-    overflow: hidden;
-}
-
-/* Add a left-border effect */
-.field_container::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 6px;
-    height: 100%;
-    background: linear-gradient(to bottom, #007bff, #ff6f61);
-    border-radius: 12px 0 0 12px;
-}
-
-/* Phase Title */
-.phase {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #ffffff;
-    background: linear-gradient(to right, #007bff, #ff6f61);
-    padding: 8px 16px;
-    border-radius: 6px;
-    display: inline-block;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Phase Name */
-.p_name {
-    font-size: 1.3rem;
-    font-weight: 700;
+h2 {
+    font-size: 24px;
     color: #333;
-    margin-top: 10px;
+    margin-bottom: 20px;
 }
 
-/* List of Topics */
-ul {
-    margin-top: 10px;
-    padding-left: 20px;
+.field_container {
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background: #f9f9f9;
+    transition: transform 0.3s;
 }
 
-ul li {
-    font-size: 1rem;
-    color: #555;
-    line-height: 1.5;
-    margin-bottom: 5px;
-    position: relative;
-    padding-left: 25px;
-}
-
-/* Bullet Point Styling */
-ul li::before {
-    content: "✔";
-    position: absolute;
-    left: 0;
-    top: 2px;
-    color: #007bff;
-    font-weight: bold;
-    font-size: 1rem;
-}
-
-/* Hover Effect */
 .field_container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transform: scale(1.02);
 }
 
-
-/* Phase Title */
 .phase {
-    font-size: 1.2rem;
+    font-size: 18px;
     font-weight: bold;
     color: #007bff;
-    padding: 5px 10px;
-    background: #eaf2ff;
+}
+
+.p_name {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #333;
+}
+
+.p_description {
+    font-size: 16px;
+    color: #666;
+    margin: 10px 0;
+}
+
+.p_lectureview {
+    background: #28a745;
+    color: white;
+    font-size: 14px;
+    padding: 8px 12px;
     border-radius: 5px;
 }
 
-/* Phase Name */
-.p_name {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #333;
-    margin-top: 10px;
-}
-
-/* List of Topics */
-ul {
-    margin-top: 10px;
-    padding-left: 20px;
-}
-
-ul li {
-    font-size: 1rem;
-    color: #555;
-    line-height: 1.5;
-    margin-bottom: 5px;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .details_top {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .details_left {
-        padding: 0;
-    }
-
-    .price_container {
-        justify-content: center;
-    }
+.p_lectureview:hover {
+    background: #218838;
 }
 
 @media (max-width: 768px) {
-    .course_details {
-        padding: 15px;
+    .details_top {
+        flex-direction: column;
+        align-items: center;
     }
-
-    .name {
-        font-size: 1.8rem;
-    }
-
-    .desc {
-        font-size: 1rem;
-    }
-
-    .price {
-        font-size: 1.2rem;
-    }
-
-    .price_container button {
-        font-size: 0.9rem;
-    }
-
-    .course_journey h2 {
-        font-size: 1.6rem;
-    }
-
-    .p_name {
-        font-size: 1.2rem;
-    }
-
-    ul li {
-        font-size: 0.95rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .course_details {
-        margin: 20px 10px;
-        padding: 10px;
-    }
-
-    .name {
-        font-size: 1.6rem;
-    }
-
-    .desc {
-        font-size: 0.95rem;
-    }
-
-    .price {
-        font-size: 1rem;
-    }
-
-    .price_container button {
-        font-size: 0.85rem;
-        padding: 8px 12px;
-    }
-
-    .course_journey h2 {
-        font-size: 1.4rem;
-    }
-
-    .p_name {
-        font-size: 1.1rem;
-    }
-
-    ul li {
-        font-size: 0.9rem;
+    .details_left, .details_right {
+        width: 100%;
+        text-align: center;
     }
 }

@@ -1,11 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SiEducative } from "react-icons/si";
-import Login from "../Login/Login";
 import './Navbar.css'
-import SignUp from "../SignUp/signUp";
 
 const Navbar = () => {
+
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem('access_token')
+        navigate('/login')
+    }
+
     return (
         <div>
             <nav className="nav_div">
@@ -25,14 +31,23 @@ const Navbar = () => {
                             </Link>
                         </ul>
                     </div>
-                    <div className="nav_button">
-                        <Link to={'login'}>
-                            <button> Login </button>
-                        </Link>
-                        <Link to={'register'}>
-                            <button> Sign Up </button>
-                        </Link>
-                    </div>
+                    { !localStorage.getItem('access_token') ? (
+                        <div className="nav_button">
+                            <Link to={'login'}>
+                                <button> Login </button>
+                            </Link>
+                            <Link to={'register'}>
+                                <button> Sign Up </button>
+                            </Link>
+
+                        </div>
+                    ) : (
+                        <div className="nav_button">
+                            <Link to={'login'}>
+                                <button onClick={handleLogout}> Logout </button>
+                            </Link>
+                        </div>
+                    )}
                 </div>
             </nav>
         </div>
