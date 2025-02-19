@@ -17,7 +17,7 @@ const SignUp = () => {
     const handleSubmit = async(e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}users/post/`, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}users/post/`, {
                 'email': email,
                 'hashed_password': password,
                 'role': role,

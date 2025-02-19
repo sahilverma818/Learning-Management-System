@@ -9,24 +9,26 @@ import CourseDetails from "./pages/Courses/CourseDetails"
 import Login from "./Components/Login/Login"
 import SignUp from "./Components/SignUp/signUp"
 import ProfilePage from "./pages/ProfilePage/profilepage";
+import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 
 function App() {
-  
-  return (
-    <>
-      <Navbar/>
-      <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/course/:id' element={<CourseDetails />}/>
-        <Route path='/login' element={<Login />} />
-        <Route path="/register" element={ <SignUp />}/>
-        <Route path="/profile" element={ <ProfilePage />}/>
-        
-      </Routes>
-      <Footer/>
-      <ToastContainer />
-    </>
-  )
+
+    return (
+        <>
+            <Navbar />
+            <Routes>
+                <Route path='/' element={<Home />} />
+                <Route path='/course/:id' element={<CourseDetails />} />
+                <Route path='/login' element={<Login />} />
+                <Route path="/register" element={<SignUp />} />
+                <Route element={<ProtectedRoute />}>
+                    <Route path="/profile" element={<ProfilePage />} />
+                </Route>
+            </Routes>
+            <Footer />
+            <ToastContainer />
+        </>
+    )
 }
 
 export default App

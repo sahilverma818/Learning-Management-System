@@ -27,7 +27,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}auth/get_token`, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}auth/get_token`, {
         'email': email,
         'password': password
       });

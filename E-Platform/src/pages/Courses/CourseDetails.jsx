@@ -15,7 +15,7 @@ const CourseDetails = () => {
     useEffect(() => {
         const fetchCourse = async () => {
             try {
-                const course = await axios.post(`${process.env.REACT_APP_API_URL}courses/get/${id}`, {
+                const course = await axios.post(`${import.meta.env.VITE_API_URL}courses/get/${id}`, {
                     'id': id
                 })
 
