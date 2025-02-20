@@ -26,7 +26,7 @@ class UserModelViewSet(BaseManager):
         """
         self.routes = APIRouter()
         super().__init__(Users)
-        self.routes.add_api_route('/get', self.fetch_record, methods=['POST'], response_model=None)
+        self.routes.add_api_route('/get', self.fetch_record, methods=['GET'], response_model=None)
 
     def create_record(self, data: schemas.UserCreate, db: Session = Depends(get_db)):
         """

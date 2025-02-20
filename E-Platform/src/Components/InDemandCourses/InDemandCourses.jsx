@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import Course from "../Course/Course";
 import { toast } from "react-toastify";
 import axios from "axios";
-import "./CourseList.css";
+import "./InDemandCourses.css";
 import Loader from "../Loader/Loader";
 
-const CourseList = () => {
+const InDemandCourses = () => {
     const [courses, setCourses] = useState([]);
 
     useEffect(() => {
@@ -46,4 +46,4 @@ const CourseList = () => {
     );
 };
 
-export default CourseList;
+export default InDemandCourses;

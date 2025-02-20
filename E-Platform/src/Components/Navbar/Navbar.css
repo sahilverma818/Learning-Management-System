@@ -56,6 +56,10 @@
     transition: color 0.3s ease-in-out;
 }
 
+.links a {
+    text-decoration: none;
+}
+
 .links li:hover {
     color: #007bff;
 }

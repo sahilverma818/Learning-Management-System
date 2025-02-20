@@ -15,7 +15,7 @@ const ProfilePage = () => {
     const fetchUserData = async () => {
         try {
             const token = localStorage.getItem('access_token');
-            const res = await axios.post(`${import.meta.env.VITE_API_URL}users/get`, null, {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL}users/get`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'accept': 'application/json'

@@ -2,7 +2,7 @@ import base64
 from typing import Dict, Any
 from datetime import datetime as dt
 
-from fastapi import Depends
+from fastapi import Depends, Query
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.orm.collections import InstrumentedList
@@ -26,7 +26,7 @@ class BaseManager:
         """
         Get Routes Method
         """
-        self.routes.add_api_route('/get/{id}', self.fetch_record, methods=['POST'], response_model=None)
+        self.routes.add_api_route('/get/{id}', self.fetch_record, methods=['GET'], response_model=None)
         self.routes.add_api_route('/post', self.create_record, methods=['POST'], response_model=None)
         self.routes.add_api_route("/list", self.fetch_all_records, methods=["POST"], response_model=None)
         self.routes.add_api_route("/update", self.update_record, methods=["PATCH"], response_model=None)
@@ -121,22 +121,26 @@ class BaseManager:
         """
         Get all method
         """
-        page_number = 1 if page_number < 0 else page_number
-        page_size = 10 if page_size <= 0 else page_size
+        try:
+            page_number = 1 if page_number < 0 else page_number
+            page_size = 10 if page_size <= 0 else page_size
+            
+            skip = (page_number - 1)*page_size 
+            query = self._get_queryset(db)
+
+            if params:
+                for attr, value in params.items():
+                    if hasattr(self.model, attr) and value is not None:
+                        column_attr = getattr(self.model, attr)
+                        query = query.filter(column_attr.ilike(f"%{value}%") if isinstance(value, str) else column_attr == value)
+            return query.offset(skip).limit(page_size).all()
         
-        skip = (page_number - 1)*page_size 
-        query = self._get_queryset(db)
-
-        if params:
-            for attr in [x for x in params if params[x] is not None]:
-                column_attr = getattr(self.model, attr)
-
-                if isinstance(params[attr], str):
-                    query = query.filter(column_attr.ilike(f"%{params[attr]}%"))
-                else:
-                    query = query.filter(column_attr == params[attr])
-
-        return query.offset(skip).limit(page_size).all()
+        except Exception as e:
+            logger.error(f'Exception occured: {str(e)}')
+            return JSONResponse(
+                content={"message": "Error occured while fetching the data", "success": False},
+                status_code=400
+            )
     
     def create_record(self, data,  db: Session = Depends(get_db)):
         """
@@ -167,12 +171,20 @@ class BaseManager:
         """
         Update method
         """
-        object_data = self._get_queryset(db).get(id)
-        for field in data.__dict__:
-            if data.__dict__[field]:
-                setattr(object_data, field, data.__dict__[field])
-        object_data = self._commit(db, object_data)
-        return object_data
+        try:
+            object_data = self._get_queryset(db).get(id)
+            for field in data.__dict__:
+                if data.__dict__[field]:
+                    setattr(object_data, field, data.__dict__[field])
+            object_data = self._commit(db, object_data)
+            return object_data
+        
+        except Exception as e:
+            logger.error(f"Exception caught: {str(e)}")
+            return JSONResponse(
+                content={"message": "Unable to update record", "success": False},
+                status_code=400
+            )
 
     def delete_record(
         self,
@@ -183,10 +195,18 @@ class BaseManager:
         """
         Delete Method
         """
-        record = db.query(self.model).get(id)
-        db.delete(record)
-        db.commit()
-        return JSONResponse(
-            content={"message": "Record deleted successfully", "success": True},
-            status_code=200
-        )
+        try:
+            record = db.query(self.model).get(id)
+            db.delete(record)
+            db.commit()
+            return JSONResponse(
+                content={"message": "Record deleted successfully", "success": True},
+                status_code=200
+            )
+        
+        except Exception as e:
+            logger.error(f"Exception caught: {str(e)}")
+            return JSONResponse(
+                content={"message": "Unable to update record", "success": False},
+                status_code=400
+            )

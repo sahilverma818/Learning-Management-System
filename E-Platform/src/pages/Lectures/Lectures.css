@@ -1,0 +1,17 @@
+.main-content {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Ensure the video area takes about 60% of the space */
+.video-component {
+  flex: 3;
+  max-width: 70%;
+}
+
+.video-sidebar {
+  flex: 2;
+  max-width: 30%;
+  min-width: 550px; /* Adjust as needed */
+}
