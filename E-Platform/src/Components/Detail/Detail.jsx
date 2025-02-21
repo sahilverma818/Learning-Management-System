@@ -6,7 +6,7 @@ import { FaCertificate } from "react-icons/fa";
 
 const Detail = () => {
     return (
-        <div>
+        <>
             <div className="details">
                 <div className="detail_container">
                     <div className="detail_list">
@@ -47,7 +47,7 @@ const Detail = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

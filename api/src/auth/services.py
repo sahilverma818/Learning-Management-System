@@ -39,9 +39,9 @@ def login(db, form_data: schemas.UserCreate):
             status_code=404
         )
     tokens = utils.jwt_manager.create_access_token(data={
-        "user_email": user.email,
-        "user_id": user.id,
-        "user_role": user.role.name
+        "email": user.email,
+        "id": user.id,
+        "role": user.role.name
     })
     active_tokens[user.email] = tokens['access_token']
     return JSONResponse(
@@ -96,3 +96,15 @@ def password_reset_request_api(db, email):
             status_code=500
         )
     
+def refresh_token_api(refresh_token, db):
+    try:
+        token_data = utils.jwt_manager.verify_token(refresh_token)
+        if (isinstance(token_data, schemas.TokenData)):
+            return utils.jwt_manager.create_access_token(token_data.__dict__)
+        
+    except Exception as e:
+        logger.error(f"{str(e)}")
+        return JSONResponse(
+            content={"message": "Error while generating tokens", "success": False},
+            status_code=400
+        )

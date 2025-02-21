@@ -15,9 +15,7 @@ const CourseDetails = () => {
     useEffect(() => {
         const fetchCourse = async () => {
             try {
-                const course = await axios.post(`${import.meta.env.VITE_API_URL}courses/get/${id}`, {
-                    'id': id
-                })
+                const course = await axios.get(`${import.meta.env.VITE_API_URL}courses/get/${id}`)
 
                 if (course.status === 200) {
                     setCourseDetail(course.data.data)
@@ -36,7 +34,7 @@ const CourseDetails = () => {
     const handleToggle = (index) => {
         setViewIndex(prevState => ({
             ...prevState,
-            [index]: !prevState[index]  // Toggle visibility for the specific module
+            [index]: !prevState[index]
         }));
     };
     
@@ -71,7 +69,7 @@ const CourseDetails = () => {
                             </button>
 
                             {viewIndex[index] && (
-                                <LectureInformation moduleId = {module.id}/>
+                                <LectureInformation moduleId = {module.id} courseId = {courseDetail.id}/>
                             )}
                         </fieldset>
                     ))}

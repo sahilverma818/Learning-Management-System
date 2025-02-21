@@ -26,7 +26,7 @@ function App() {
                 <Route path="/register" element={<SignUp />} />
                 <Route element={<ProtectedRoute />}>
                     <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/lectures" element={<Lectures />} />
+                    <Route path="/course/:course-id/lectures/:id" element={<Lectures />} />
                 </Route>
             </Routes>
             <Footer />

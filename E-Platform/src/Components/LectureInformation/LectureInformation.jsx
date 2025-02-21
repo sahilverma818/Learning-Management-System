@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import Loader from "../Loader/Loader";
 import "./LectureInformation.css"
 
 const LectureInformation = (props) => {
 
+    const {id} = useParams();
     const [lectures, setLectures] = useState();
     
     useEffect(() => {
@@ -48,7 +51,9 @@ const LectureInformation = (props) => {
                             <td className="lecture-title">{lecture.lecture_title}</td>
                             <td className="lecture-description">{lecture.lecture_description}</td>
                             <td>
-                                <button className="view-btn">View Lecture</button>
+                                <Link to={`/course/${props.courseId}/lectures/${lecture.id}`}>
+                                    <button className="view-btn">View Lecture</button>
+                                </Link>
                             </td>
                         </tr>
                     ))}

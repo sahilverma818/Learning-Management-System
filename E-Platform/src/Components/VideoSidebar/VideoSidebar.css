@@ -24,6 +24,11 @@
   margin-bottom: 16px;
 }
 
+.sidebar a{
+  text-decoration: none;
+  color: black;
+}
+
 /* Card styling for each lecture */
 .lecture-card {
   background-color: #ffffff;

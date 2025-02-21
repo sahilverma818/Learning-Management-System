@@ -29,7 +29,7 @@ class TokenAuthentication:
                 "exp": access_expire
             })
             access_encoded_jwt = jwt.encode(data, self.SECRET_KEY, algorithm=self.ALGORITHM)
-            data['exp'] = datetime.now() + timedelta(minutes=self.REFRESH_TOKEN_EXPIRY_MINUTES)
+            data['exp'] = datetime.now() + timedelta(minutes=refresh_token_valid_time)
             refresh_encoded_jwt = jwt.encode(data, self.SECRET_KEY, algorithm=self.ALGORITHM)
             context = {
                 "access_token": access_encoded_jwt,
@@ -53,9 +53,9 @@ class TokenAuthentication:
                 algorithms=self.ALGORITHM
             )
 
-            user_email: str = payload.get("user_email")
-            user_id: int = payload.get("user_id")
-            user_role: str = payload.get("user_role")
+            user_email: str = payload.get("email")
+            user_id: int = payload.get("id")
+            user_role: str = payload.get("role")
             
             is_valid = int(time.time()) < payload.get('exp')
             if user_email is None and not is_valid:

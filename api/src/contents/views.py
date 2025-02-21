@@ -67,6 +67,7 @@ class LectureModelViewSet(BaseManager):
     def _get_routes(self):
         super()._get_routes()
         self.routes.add_api_route('/lecture-video', self.video_lecture, methods=['POST'], response_model=None)
+        self.routes.add_api_route('/get-course-lectures/{course_id}', self.course_lecture, methods=['GET'], response_model=None)
 
     def create_record(self, data: LectureCreate, current_user: UserUpdate = Depends(get_current_user) ,db: Session = Depends(get_db)):
         """
@@ -79,6 +80,16 @@ class LectureModelViewSet(BaseManager):
         Update Method
         """
         return super().update_record(id, data, db)
+    
+    def course_lecture(self, course_id, db: Session = Depends(get_db)):
+        try:
+            result = db.query(Lectures.id, Lectures.lecture_title).join(Modules).filter(Modules.course_id == course_id).all()
+            return [dict(lecture_id=row[0], lecture_title=row[1]) for row in result]
+        except Exception as e:
+            return JSONResponse(
+                content={"message": "Unable to fetch lectures", "success": False},
+                status_code=400
+            )
     
     def video_lecture(self, id: int, file: UploadFile = File(...)):
         """

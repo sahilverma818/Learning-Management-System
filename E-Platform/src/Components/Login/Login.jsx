@@ -27,7 +27,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}auth/get_token`, {
+      let response = await axios.post(`${import.meta.env.VITE_API_URL}auth/get_token`, {
         'email': email,
         'password': password
       });
@@ -35,11 +35,27 @@ const Login = () => {
       if (response.status === 200) {
         localStorage.setItem('access_token', response.data.access_token);
         localStorage.setItem('refresh_token', response.data.refresh_token);
-        toast.success('Login successful', {
-          onClose: () => {
-            navigate('/')
+
+        let intervalId = setInterval(async() => {
+          const userLoggedIn = localStorage.getItem('refresh_token');
+          if (userLoggedIn) {
+            try{
+              response = await axios.get(`${import.meta.env.VITE_API_URL}auth/refresh-token?refresh_token=${userLoggedIn}`)
+  
+              if (response.status === 200) {
+                localStorage.setItem('access_token', response.data.access_token);
+                localStorage.setItem('refresh_token', response.data.refresh_token);
+              }
+            } catch (error) {
+              toast.error(`${error}`)
+            }
+          } else {
+            clearInterval(intervalId)
           }
-        })
+        }, 1000 * 60 * 4);
+
+        toast.success('Login successful')
+        navigate('/')
 
       };
     } catch (error){

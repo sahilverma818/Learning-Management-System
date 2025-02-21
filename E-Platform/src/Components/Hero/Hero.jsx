@@ -4,7 +4,7 @@ import classroom from '../../assets/class.jpg'
 
 const Hero = () => {
     return (
-        <div>
+        <>
             <div className="hero">
                 <h1 className="hero_header">
                     Unlock Your Potential With Top Tier Online Courses
@@ -15,7 +15,7 @@ const Hero = () => {
                 </div>
                 <img src={classroom} alt="" />
             </div>
-        </div>
+        </>
     )
 }
 
