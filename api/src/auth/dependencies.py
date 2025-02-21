@@ -1,5 +1,4 @@
 from fastapi import Depends, HTTPException
-from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 

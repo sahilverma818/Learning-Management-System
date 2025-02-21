@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from sqlalchemy import (
     Column,
     Integer,
@@ -8,7 +7,6 @@ from sqlalchemy import (
     Boolean
 )
 from sqlalchemy.orm import relationship
-
 from src.core.database import Base
 
 class Coupons(Base):

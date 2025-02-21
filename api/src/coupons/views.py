@@ -4,8 +4,6 @@ from sqlalchemy.orm import Session
 from src.core.views import BaseManager
 from src.coupons.models import Coupons
 from src.core.database import get_db
-from src.auth.dependencies import get_current_user
-from src.users.schemas import UserUpdate
 from src.coupons.schemas import (
     CreateCoupon,
     UpdateCoupon

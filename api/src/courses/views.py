@@ -9,7 +9,6 @@ from src.core.views import BaseManager
 from src.auth.dependencies import get_current_user
 from src.core.database import get_db
 from src.courses.models import Courses
-from src.contents.models import Modules
 from src.courses.schemas import (
     CourseCreate,
     CourseUpdate

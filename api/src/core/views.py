@@ -1,8 +1,7 @@
-import base64
 from typing import Dict, Any
 from datetime import datetime as dt
 
-from fastapi import Depends, Query
+from fastapi import Depends
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.orm.collections import InstrumentedList

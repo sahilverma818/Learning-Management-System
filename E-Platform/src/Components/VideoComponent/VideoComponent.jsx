@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './VideoComponent.css';
 import ReactMarkdown from 'react-markdown';
@@ -9,14 +9,15 @@ import Loader from '../Loader/Loader';
 
 const VideoComponent = () => {
   
-  const {id} = useParams();
+  const { 'course-id': courseId, id } = useParams();
   const [lectureDetails, setLectureDetails] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLectureDetails = async() => {
       try {
         const token = localStorage.getItem('access_token')
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}lectures/get/${id}`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}lectures/course/${courseId}/lecture/get/${id}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'accept': 'application/json'
@@ -24,15 +25,16 @@ const VideoComponent = () => {
         })
 
         if (response.status === 200) {
-          setLectureDetails(response.data.data)
+          setLectureDetails(response.data)
         }
 
       } catch (error) {
-        console.log(error.message);
+        toast.error(error.response.data.message);
+        navigate(-1)
       } 
     };
     fetchLectureDetails(); 
-  }, [id])
+  }, [id, courseId])
 
   if (!lectureDetails) {
     return <Loader />
