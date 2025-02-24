@@ -14,8 +14,8 @@ class Coupons(Base):
     __tablename__ = "Coupons"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    code = Column(String, unique=True)
-    name = Column(String)
+    code = Column(String(255), unique=True)
+    name = Column(String(255))
     start_date = Column(DateTime)
     expiry_date = Column(DateTime)
     discount_percentage = Column(Integer)

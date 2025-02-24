@@ -17,7 +17,6 @@ from src.contents.schemas import (
     LectureCreate,
     LectureUpdate
 )
-from src.enrollments.dependencies import verify_enrollment
 from src.users.schemas import UserUpdate
 
 
@@ -87,15 +86,15 @@ class LectureModelViewSet(BaseManager):
         id,
         course_id,
         related_field=None,
-        db: Session = Depends(get_db),
-        current_user = Depends(get_current_user)
+        current_user = Depends(get_current_user),
+        db: Session = Depends(get_db)
     ):
         try:
-            if not verify_enrollment(course_id, current_user.id, db):
-                return JSONResponse(
-                    content={"message": "You don't have access to that course", "success": False},
-                    status_code=403
-                )
+            # if not verify_enrollment(course_id, current_user.id, db):
+            #     return JSONResponse(
+            #         content={"message": "You don't have access to that course", "success": False},
+            #         status_code=403
+            #     )
             result = db.query(Lectures).join(Modules).join(Courses).filter(Lectures.id==id, Modules.course_id==course_id).all()
             if result:
                 return self._serialize(result[0].__dict__)

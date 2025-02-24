@@ -13,6 +13,8 @@ class Enrollments(Base):
     course_id = Column(Integer, ForeignKey("Courses.id"))
     valid_from = Column(DateTime, default=datetime.now())
     valid_to = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.now())
+    updated_at = Column(DateTime, default=datetime.now())
     
     users = relationship("Users", back_populates="enrollments")
     courses = relationship("Courses", back_populates="enrollments")

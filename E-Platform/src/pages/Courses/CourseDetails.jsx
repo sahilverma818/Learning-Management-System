@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import './CourseDetails.css'
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Loader from "../../Components/Loader/Loader";
 import LectureInformation from "../../Components/LectureInformation/LectureInformation";
 
@@ -50,7 +50,7 @@ const CourseDetails = () => {
                         <p className="date"> {Date(courseDetail.start_date)} </p>
                         <div className="price_container">
                             <h3 className="price">Price: Rs. {courseDetail.fees}</h3>
-                            <button> Buy Now !! </button>
+                            { (localStorage.getItem('user_role') === 'student')? <button> Buy Now !! </button>: <Link to={`/createlecture/${id}`}><button> Add Lectures </button></Link>}
                         </div>
                     </div>
                     <div className="details_right">

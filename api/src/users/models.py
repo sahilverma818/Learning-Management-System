@@ -10,11 +10,11 @@ class Users(Base):
     __tablename__ = "Users"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
+    email = Column(String(255), unique=True, index=True)
+    hashed_password = Column(String(255))
     role = Column(Enum(RoleEnum), default=RoleEnum.student)
-    firstname = Column(String)
-    lastname = Column(String)
+    firstname = Column(String(255))
+    lastname = Column(String(255))
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, default=datetime.now())
     is_archieved = Column(Boolean, default=False)

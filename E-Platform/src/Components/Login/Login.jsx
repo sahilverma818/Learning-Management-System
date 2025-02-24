@@ -33,8 +33,10 @@ const Login = () => {
       });
 
       if (response.status === 200) {
-        localStorage.setItem('access_token', response.data.access_token);
-        localStorage.setItem('refresh_token', response.data.refresh_token);
+        debugger
+        localStorage.setItem('access_token', response.data.data.tokens.access_token);
+        localStorage.setItem('refresh_token', response.data.data.tokens.refresh_token);
+        localStorage.setItem('user_role', response.data.data.role)
 
         let intervalId = setInterval(async() => {
           const userLoggedIn = localStorage.getItem('refresh_token');
@@ -43,8 +45,9 @@ const Login = () => {
               response = await axios.get(`${import.meta.env.VITE_API_URL}auth/refresh-token?refresh_token=${userLoggedIn}`)
   
               if (response.status === 200) {
-                localStorage.setItem('access_token', response.data.access_token);
-                localStorage.setItem('refresh_token', response.data.refresh_token);
+                localStorage.setItem('access_token', response.data.data.tokens.access_token);
+                localStorage.setItem('refresh_token', response.data.data.tokens.refresh_token);
+                localStorage.setItem('user_role', response.data.data.role)
               }
             } catch (error) {
               toast.error(`${error}`)

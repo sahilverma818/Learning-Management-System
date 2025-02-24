@@ -1,0 +1,123 @@
+.lecture-form-container {
+    width: 75%;
+    margin: 40px auto;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.lecture-form-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 26px;
+    color: #222;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* First row: Title, Video Upload, and Module Selection */
+.first-row {
+    display: flex;
+    gap: 25px;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.first-row > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.new-module-link {
+    margin-top: 6px;
+    font-size: 14px;
+    text-align: right;
+    align-self: flex-end;
+}
+
+.new-module-link a {
+    text-decoration: none;
+}
+
+/* Second row: Description editor and Preview */
+.description-portion {
+    display: flex;
+    gap: 25px;
+    margin-top: 25px;
+    align-items: stretch;
+}
+
+#markdown-input, .markdown-preview {
+    width: 50%;
+    height: 280px;
+    padding: 12px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    background: #fff;
+    overflow-y: auto;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+}
+
+.markdown-preview {
+    background: #f4f4f4;
+}
+
+button {
+    margin-top: 25px;
+    padding: 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.preview-btn {
+    background: #28a745;
+    color: white;
+}
+
+.preview-btn:hover {
+    background: #218838;
+}
+
+.submit-btn {
+    background: #007bff;
+    color: white;
+}
+
+.submit-btn:hover {
+    background: #0056b3;
+}
+
+@media (max-width: 768px) {
+    .first-row, .description-portion {
+        flex-direction: column;
+    }
+    #markdown-input, .markdown-preview {
+        width: 100%;
+        height: 220px;
+    }
+}

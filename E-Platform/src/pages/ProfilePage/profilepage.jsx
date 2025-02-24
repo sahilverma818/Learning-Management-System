@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
 import "./profilepage.css"
+import { Link } from "react-router-dom";
 
 const ProfilePage = () => {
 
-    const [userData, setUserData] = useState({
-        firstname: '',
-        lastname: '',
-        email: '',
-        role: '',
-        enrolledCourses: []
-    });
+    const [userData, setUserData] = useState({});
 
     const fetchUserData = async () => {
         try {
@@ -23,7 +18,6 @@ const ProfilePage = () => {
             });
             if (res.status === 200) {
                 setUserData(res.data.data);
-                console.log("****", userData);
                 
             }
         } catch (error) {
@@ -40,7 +34,7 @@ const ProfilePage = () => {
             <div className="profile-wrapper">
                 <div className="profile-header">
                     <div className="profile-info">
-                        <h2>Student Profile</h2>
+                        <h2>{ userData.role }'s Profile</h2>
                         <div className="user-details">
                             <div className="detail-group">
                                 <label>First Name:</label>
@@ -68,7 +62,6 @@ const ProfilePage = () => {
                         <div className="stat-card">
                             <h4>Enrolled Courses</h4>
                             <span className="stat-number">{userData.courses && userData.courses.length}</span>
-                            
                         </div>
                         <div className="stat-card">
                             <h4>Completed Courses</h4>
@@ -84,30 +77,18 @@ const ProfilePage = () => {
                 <div className="courses-section">
                     <h3>My Courses</h3>
                     <div className="courses-grid">
-                        <div className="course-card">
-                            <h4>Web Development</h4>
-                            <p>Progress: 75%</p>
-                            <div className="progress-bar">
-                                <div className="progress" style={{width: '75%'}}></div>
+                        { userData.courses && userData.courses.map((course) => (
+                            <div className="course-card">
+                                <h4> { course.course_name } </h4>
+                                <p>Progress: 75%</p>
+                                <div className="progress-bar">
+                                    <div className="progress" style={{width: '75%'}}></div>
+                                </div>
+                                <Link to={`/course/${course.id}`}>
+                                    <button className="continue-btn">Continue</button>
+                                </Link>
                             </div>
-                            <button className="continue-btn">Continue Learning</button>
-                        </div>
-                        <div className="course-card">
-                            <h4>Data Structures</h4>
-                            <p>Progress: 45%</p>
-                            <div className="progress-bar">
-                                <div className="progress" style={{width: '45%'}}></div>
-                            </div>
-                            <button className="continue-btn">Continue Learning</button>
-                        </div>
-                        <div className="course-card">
-                            <h4>Machine Learning</h4>
-                            <p>Progress: 90%</p>
-                            <div className="progress-bar">
-                                <div className="progress" style={{width: '90%'}}></div>
-                            </div>
-                            <button className="continue-btn">Continue Learning</button>
-                        </div>
+                        )) }
                     </div>
                 </div>
             </div>

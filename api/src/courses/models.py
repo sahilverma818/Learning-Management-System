@@ -10,13 +10,13 @@ class Courses(Base):
     __tablename__ = "Courses"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    course_name = Column(String)
-    course_description = Column(String)
+    course_name = Column(String(255))
+    course_description = Column(String(255))
     instructor_id = Column(Integer, ForeignKey('Users.id'))
     start_date = Column(DateTime)
     duration = Column(Integer)
     fees = Column(Float)
-    image = Column(String)
+    image = Column(String(255))
     created_at = Column(DateTime, default=datetime.now())
     last_enrollment_date = Column(DateTime)
     updated_at = Column(DateTime, default=datetime.now())

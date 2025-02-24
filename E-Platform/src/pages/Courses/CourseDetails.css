@@ -100,10 +100,6 @@ h2 {
     transition: transform 0.3s;
 }
 
-.field_container:hover {
-    transform: scale(1.02);
-}
-
 .phase {
     font-size: 18px;
     font-weight: bold;

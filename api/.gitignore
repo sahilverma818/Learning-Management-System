@@ -17,6 +17,7 @@ __pycache__/
 # Devs tools files
 
 .vscode/
+alembic/
 
 # Media Files
 

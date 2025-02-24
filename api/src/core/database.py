@@ -8,8 +8,12 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 db_name = config['database']['db_name']
+db_user = config['database']['db_username']
+db_password = config['database']['db_password']
+db_host = config['database']['db_host']
+db_port = config['database']['db_port']
 
-SQLALCHEMY_DATABASE_URL = f"sqlite:///./{db_name}"
+SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,

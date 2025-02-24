@@ -36,14 +36,16 @@ def login(db, form_data: schemas.UserCreate):
             content={"message": "User not found", "success": False},
             status_code=404
         )
-    tokens = utils.jwt_manager.create_access_token(data={
+    context_data = {
         "email": user.email,
         "id": user.id,
         "role": user.role.name
-    })
+    }
+    tokens = utils.jwt_manager.create_access_token(data=context_data)
+    context_data['tokens'] = tokens
     active_tokens[user.email] = tokens['access_token']
     return JSONResponse(
-        content=tokens,
+        content={"message": "Login successful", "data": context_data},
         status_code=200
     )
 
