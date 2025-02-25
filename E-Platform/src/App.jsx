@@ -13,6 +13,7 @@ import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 import CourseList from "./pages/CoursesList/CoursesList";
 import Lectures from "./pages/Lectures/Lecture";
 import CreateLecture from "./pages/CreateLecture/CreateLecture";
+import PageNotFound from "./Components/PageNotFound/PageNotFound";
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
                     <Route path="/course/:course-id/lectures/:id" element={<Lectures />} />
                     <Route path="/createlecture/:id" element={<CreateLecture />} />
                 </Route>
+                <Route path="*" element={<PageNotFound />} />
             </Routes>
             <Footer />
             <ToastContainer />

@@ -1,5 +1,5 @@
 import time
-from datetime import datetime, timedelta
+from datetime import datetime as dt, timedelta
 
 from jose import JWTError, jwt
 from fastapi import HTTPException
@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse
 
 from src.auth.config import settings
 from src.auth.schemas import TokenData
+from src.core.logger import *
 
 import smtplib
 from email.mime.text import MIMEText
@@ -21,15 +22,16 @@ class TokenAuthentication:
         self.REFRESH_TOKEN_EXPIRY_MINUTES = settings.REFRESH_TOKENS_EXPIRY_MINUTES
 
     def create_access_token(self, data: TokenData, expiry_time=None):
+        logger.info('Access token generation functionality')
         try:
             valid_time = 2 if expiry_time else self.ACCESS_TOKENS_EXPIRY_MINUTES
             refresh_token_valid_time = 300 if expiry_time else self.REFRESH_TOKEN_EXPIRY_MINUTES
-            access_expire = datetime.now() + timedelta(minutes=valid_time)
+            access_expire = dt.now() + timedelta(minutes=valid_time)
             data.update({
                 "exp": access_expire
             })
             access_encoded_jwt = jwt.encode(data, self.SECRET_KEY, algorithm=self.ALGORITHM)
-            data['exp'] = datetime.now() + timedelta(minutes=refresh_token_valid_time)
+            data['exp'] = dt.now() + timedelta(minutes=refresh_token_valid_time)
             refresh_encoded_jwt = jwt.encode(data, self.SECRET_KEY, algorithm=self.ALGORITHM)
             context = {
                 "access_token": access_encoded_jwt,
@@ -41,7 +43,7 @@ class TokenAuthentication:
         
         except Exception as e:
             return JSONResponse(
-                content={"message": f"Errow while generating access token\n{str(e)}", "success": False},
+                content={"message": f"Error while generating access token\n{str(e)}", "success": False},
                 status_code=500
             )
     

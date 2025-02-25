@@ -1,0 +1,24 @@
+[settings]
+SECRET_KEY = None
+ALGORITHMS = None
+ACCESS_TOKENS_EXPIRY_MINUTES = None
+REFRESH_TOKENS_EXPIRY_MINUTES = None
+FORGET_PASSWORD_EXPIRY_MINUTES = None
+
+
+[gmail]
+EMAIL_ADDRESS = None
+EMAIL_PASSWORD = None
+SMTP_SERVER = None
+SMTP_PORT = None
+
+[database]
+db_name = None
+db_username = None
+db_password = None
+db_host = None
+db_port = None
+
+[gpay]
+UPI_ID = None
+NAME = None

@@ -1,9 +1,33 @@
 /* Footer Styling */
 .footer {
-    background: #222;
+    background: #2c2b2b;
     color: #f1f1f1;
     padding: 40px 20px;
     text-align: center;
+}
+
+
+.foot_header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #5c5959;
+    font-weight: bold;
+}
+
+.logo svg {
+    font-size: 2rem;
+    color: #007bff;
+}
+
+.foot_logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.foot_logo span {
+    color: #007bff;
 }
 
 /* Flex container */

@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import './signUp.css'
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
 
@@ -93,7 +93,9 @@ const SignUp = () => {
                     
                     <button type="submit" className="register-btn">Register</button>
                     <div className="footer-links">
-                        <a href="#">Already have an account? Login</a>
+                        <Link to={'/login'}>
+                            <a href="#">Already have an account? Login</a>
+                        </Link>
                     </div>
                 </form>
             </div>

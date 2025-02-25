@@ -1,14 +1,15 @@
 import React from "react";
 import "./Footer.css";
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { SiEducative } from "react-icons/si";
 
 const Footer = () => {
     return (
         <footer className="footer">
             <div className="footer_container">
-                <div className="footer_about">
-                    <h2>EduPlatform</h2>
-                    <p>Your trusted learning partner for quality online education.</p>
+                <div className="foot_header">
+                    <div className="logo">< SiEducative /></div>
+                    <h2 className="foot_logo"><span>Edu</span>Verse</h2>
                 </div>
 
                 <div className="footer_links">

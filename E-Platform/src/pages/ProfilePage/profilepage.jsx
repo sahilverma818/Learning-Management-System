@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react"
 import axios from "axios"
 import "./profilepage.css"
 import { Link } from "react-router-dom";
+import CreateCourse from "../../Components/CreateCourse/CreateCourse";
 
 const ProfilePage = () => {
 
     const [userData, setUserData] = useState({});
+    const [isOpen, setIsOpen] = useState(false)
 
     const fetchUserData = async () => {
         try {
@@ -31,6 +33,7 @@ const ProfilePage = () => {
 
     return (
         <div>
+            {isOpen && <CreateCourse onClose={() => setIsOpen(false)} />}
             <div className="profile-wrapper">
                 <div className="profile-header">
                     <div className="profile-info">
@@ -75,10 +78,13 @@ const ProfilePage = () => {
                 </div>
 
                 <div className="courses-section">
-                    <h3>My Courses</h3>
+                    <div className="courses-header">
+                        <h3>My Courses</h3>
+                        <button className="add-course-btn" onClick={() => setIsOpen(true)}>Add Courses +</button>
+                    </div>
                     <div className="courses-grid">
                         { userData.courses && userData.courses.map((course) => (
-                            <div className="course-card">
+                            <div className="course-card" key={course.id}>
                                 <h4> { course.course_name } </h4>
                                 <p>Progress: 75%</p>
                                 <div className="progress-bar">

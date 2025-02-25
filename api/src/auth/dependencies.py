@@ -6,10 +6,13 @@ from src.auth import utils
 from src.core import database
 from src.users.models import Users
 from src.auth.services import active_tokens
+from src.core.logger import *
 
 bearer_scheme = HTTPBearer()
 
 def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme)):
+    logger.info('Checking logged in user')
+    
     token = credentials.credentials
     token_data = utils.jwt_manager.verify_token(token)
     

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { toast } from "react-toastify";
 import './Login.css'
@@ -99,7 +99,9 @@ const Login = () => {
           <button type="submit" className="login-btn">Login</button>
           <div className="footer-links">
             <a href="#">Forgot Password?</a>
-            <a href="#">Sign Up</a>
+            <Link to={'/register'}>
+              <a href="#">Sign Up</a>
+            </Link>
           </div>
         </form>
       </div>

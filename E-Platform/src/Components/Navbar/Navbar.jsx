@@ -20,7 +20,7 @@ const Navbar = () => {
                     <Link to="/">
                         <div className="nav_header">
                             <div className="logo">< SiEducative/></div>
-                            <h2 className="nav_logo"><span>Edu</span>Kative</h2>
+                            <h2 className="nav_logo"><span>Edu</span>Verse</h2>
                         </div>
                     </Link>
                     <div className="links">
@@ -28,7 +28,9 @@ const Navbar = () => {
                             <Link to={'courses'}>
                                 <li> Courses </li>
                             </Link>
-                            <li> Contacts </li>
+                            <Link to={'/contacts'}>
+                                <li> Contacts </li>
+                            </Link>
                             <Link to={'profile'}>
                                 <li>  Profile </li>
                             </Link>
