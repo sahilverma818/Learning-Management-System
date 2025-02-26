@@ -24,5 +24,6 @@ alembic/
 qr-code/
 log_files/
 lectures/
-lecture_video
-course-thumbnail/
+lecture_video/
+lectures/
+course_thumbnail/

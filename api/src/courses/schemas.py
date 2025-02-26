@@ -13,8 +13,9 @@ class CourseUpdate(BaseModel):
 class CourseCreate(BaseModel):
     course_name: str
     course_description: str
-    instructor_id: int
+    instructor_id: int = None
     start_date: datetime
+    last_enrollment_date: datetime = None
     duration: int
     fees: float
     image: Optional[str]

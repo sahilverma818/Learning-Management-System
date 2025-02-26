@@ -1,3 +1,4 @@
+import base64
 from typing import Dict, Any
 from datetime import datetime as dt
 
@@ -148,13 +149,6 @@ class BaseManager:
         try:
             if not isinstance(data, dict):
                 data = data.__dict__
-                
-            # if data.get('image'):
-            #     image_data = base64.b64decode(data['image'])
-            #     image_path = f"static/course_thumbnail/{data.title.replace(' ', '-')}.jpg"
-            #     with open(image_path, "wb") as f:
-            #         f.write(image_data)
-            #     data['image'] = image_path
 
             db_obj = self.model(**data)
             db_obj = self._commit(db, db_obj)

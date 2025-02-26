@@ -1,3 +1,4 @@
+import base64
 from datetime import datetime as dt
 
 from fastapi import APIRouter, Depends
@@ -34,6 +35,15 @@ class CourseModelViewSet(BaseManager):
                 content={"message": "Unautherised Access. You don't have permission to perform this operation", "success": True},
                 status_code=403
             )
+        data.instructor_id = current_user.id
+
+        if data.image:
+            image_data = base64.b64decode(data.image)
+            image_path = f"static/course_thumbnail/{data.course_name.replace(' ', '-')}.jpg"
+            with open(image_path, "wb") as f:
+                f.write(image_data)
+            data.image = image_path
+
         return super().create_record(data, db)
     
     def update_record(self, id: int, data: CourseUpdate, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
