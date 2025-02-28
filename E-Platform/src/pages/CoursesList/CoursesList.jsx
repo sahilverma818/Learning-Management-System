@@ -17,7 +17,7 @@ const CourseList = () => {
                     setCourses(response.data);
                 }
             } catch (error) {
-                toast(`Exception error: ${error}`)
+                toast.error(error.response?.data?.message || "An error occurred");
                 console.error("Exception error:", error);
             }
         };

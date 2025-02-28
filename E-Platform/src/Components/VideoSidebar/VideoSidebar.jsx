@@ -17,7 +17,7 @@ const VideoSidebar = () => {
           setLectureList(response.data)
         }
       } catch(error) {
-        toast.error(`Error fetching lectures ${error.message}`)
+        toast.error(error.response?.data?.message || "An error occurred");
       }
     }
     fetchLectureList();

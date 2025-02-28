@@ -1,14 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
-import "./CreateLecture.css";
-import ReactMarkdown from 'react-markdown';
-import { Link, useParams } from "react-router-dom";
-import axios from "axios";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import ReactMarkdown from 'react-markdown';
+import axios from "axios";
 import CreateModule from "../../Components/CreateModule/CreateModule";
+import "./CreateLecture.css";
 
 const CreateLecture = () => {
     const {id} = useParams();
-    const imageRef = useRef(null);
     const videoRef = useRef(null);
     const [preview, setPreview] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +22,7 @@ const CreateLecture = () => {
 
 
     const previewMarkdown = () => {
-        setPreview(imageRef.current.value);
+        setPreview(lectureData.lecture_description);
         setIsModalOpen(true);
     };
 
@@ -42,7 +41,7 @@ const CreateLecture = () => {
                     setModules(moduleResponse.data)
                 }
             } catch (error) {
-                toast.error(error)
+                toast.error(error.response?.data?.message || "An error occurred");
             }
         };
         fetchModules();
@@ -59,11 +58,11 @@ const CreateLecture = () => {
             })
 
             if (videoResponse.status === 201) {
-                lectureData.video_path = videoResponse.data.file_path
+                setLectureData({ ...lectureData, [video_path]: videoResponse.data.video_path})
                 toast.success('Video Uploaded Successfully')
             }
         } catch (error) {
-            toast.error(error.data)
+            toast.error(error.response?.data?.message || "An error occurred");
         }
     }
 
@@ -87,7 +86,7 @@ const CreateLecture = () => {
                 toast.success('Lecture Record Added Successfully')
             }
         } catch (error) {
-            toast.error(error.data)
+            toast.error(error.response?.data?.message || "An error occurred");
         }
     }
 
@@ -119,7 +118,7 @@ const CreateLecture = () => {
                 </div>
                 
                 <label>Lecture Description (Markdown)</label>
-                <textarea id="markdown-input" name="lecture_description" value={lectureData.lecture_description} onChange={handleChange} ref={imageRef} placeholder="Type your Markdown here..." />
+                <textarea id="markdown-input" name="lecture_description" value={lectureData.lecture_description} onChange={handleChange} placeholder="Type your Markdown here..." />
                 
                 <button type="button" className="preview-btn" onClick={previewMarkdown}>Preview</button>
                 <button type="submit" className="submit-btn">Add Lecture</button>

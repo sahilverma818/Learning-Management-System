@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { toast } from "react-toastify";
@@ -50,7 +50,7 @@ const Login = () => {
                 localStorage.setItem('user_role', response.data.data.role)
               }
             } catch (error) {
-              toast.error(`${error}`)
+              toast.error(error.response?.data?.message || "An error occurred");
             }
           } else {
             clearInterval(intervalId)
@@ -62,9 +62,15 @@ const Login = () => {
 
       };
     } catch (error){
-      toast.error(error.response.data.message)
+      toast.error(error.response?.data?.message || "An error occurred");
     }
   }
+
+  useEffect(() => {
+    if (localStorage.getItem('access_token')) {
+      navigate("/")
+    }
+  }, []);
 
   return (
     <div className="login-wrapper">

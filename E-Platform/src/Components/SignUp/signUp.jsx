@@ -25,12 +25,11 @@ const SignUp = () => {
                 'lastname': lastname
             })
             if (response.status == 200) {
-                toast.success('User registration successful', {
-                    onClose: () => navigate('/login')
-                });
+                toast.success('User registration successful');
+                navigate('/login')
             }
         } catch (error) {
-            toast.error(error.response.data.message)
+            toast.error(error.response?.data?.message || "An error occurred");
         }
         
     }
