@@ -71,10 +71,17 @@ class OrderModelViewSet(BaseManager):
             qr_img = qrcode.make(upi_url)
             path = f"static/qr-code/dynamic_gpay_qr_amount_{amount}.png"
             qr_img.save(path)
-            return FileResponse(path, media_type="image/png")
+            return JSONResponse(
+                content={
+                    "message": "QR Code generated successfully",
+                    "success": False,
+                    "file_path": path,
+                    "amount_payable": amount
+                }, status_code=200
+            )
         else:
             return JSONResponse(
                 content={"Message": "Could not verify coupons. It might be expired.", "success": False},
-                status_code=500
+                status_code=400
             )
          

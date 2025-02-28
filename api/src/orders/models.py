@@ -12,7 +12,7 @@ class Orders(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     course_id = Column(Integer, ForeignKey('Courses.id'))
     user_id = Column(Integer, ForeignKey('Users.id'))
-    coupon_id = Column(Integer, ForeignKey('Coupons.id'))
+    coupon_id = Column(Integer, ForeignKey('Coupons.id'), nullable=True)
     amount_payable = Column(Float)
     status = Column(String(255), default="Not Verified")
     payment_method = Column(String(255))

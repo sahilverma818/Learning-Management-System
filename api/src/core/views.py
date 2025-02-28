@@ -104,7 +104,7 @@ class BaseManager:
                 return JSONResponse({
                     "success": False,
                     "message": "No records found"
-                })
+                }, status_code=404)
             
         except Exception as e:
             return JSONResponse(
