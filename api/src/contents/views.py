@@ -1,4 +1,5 @@
 import shutil
+from datetime import datetime as dt
 
 from fastapi import APIRouter, Depends, UploadFile, File
 from fastapi.responses import JSONResponse, FileResponse
@@ -120,11 +121,11 @@ class LectureModelViewSet(BaseManager):
                 status_code=400
             )
     
-    def video_lecture(self, id: int, file: UploadFile = File(...)):
+    def video_lecture(self, file: UploadFile = File(...)):
         """
         Saving video lectures
         """
-        file_path = f"static/lectures/lec_video_{id}_{file.filename}"
+        file_path = f"static/lectures/lec_video_{str(dt.now())}_{file.filename}"
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
@@ -132,8 +133,7 @@ class LectureModelViewSet(BaseManager):
             content={
                 "message": "Lecture Video Saved Successfully",
                 "file_path": file_path,
-                "success": True,
-                "file": FileResponse(file.file)
+                "success": True
             },
             status_code=201
         )

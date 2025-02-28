@@ -1,5 +1,31 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #0ff rgba(0, 0, 0, 0.7);
 }
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+}
+
+/* Handle (thumb) */
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #0ff 20%, #00f 80%);
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #0ff, #00f, #ff00ff);
+    box-shadow: 0px 0px 10px #0ff, 0px 0px 20px #00f;
+}
+

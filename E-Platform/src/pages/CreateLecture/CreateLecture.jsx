@@ -1,75 +1,144 @@
-import React, { useState, useRef } from "react";
-import "./CreateLecture.css"; // Import global CSS
+import React, { useState, useRef, useEffect } from "react";
+import "./CreateLecture.css";
 import ReactMarkdown from 'react-markdown';
-import { FiUpload } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+import CreateModule from "../../Components/CreateModule/CreateModule";
 
 const CreateLecture = () => {
-    
-    const inputRef = useRef(null);
-    const [preview, setPreview] = useState('')
+    const {id} = useParams();
+    const imageRef = useRef(null);
+    const videoRef = useRef(null);
+    const [preview, setPreview] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [modules, setModules] = useState([]);
+    const [lectureData, setLectureData] = useState({
+        "lecture_title": "",
+        "lecture_description": "",
+        "video_path": "",
+        "module_id": ""
+    })
+
+
     const previewMarkdown = () => {
-        setPreview(inputRef.current.value)
+        setPreview(imageRef.current.value);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    useEffect(() => {
+        const fetchModules = async () => {
+            try {
+                const moduleResponse = await axios.post(`${import.meta.env.VITE_API_URL}modules/list`, {
+                    "course_id": parseInt(id)
+                })
+
+                if (moduleResponse.status === 200) {
+                    setModules(moduleResponse.data)
+                }
+            } catch (error) {
+                toast.error(error)
+            }
+        };
+        fetchModules();
+    },[id])
+
+    const handleVideoUpload = async () => {
+        try {
+            const formData = new FormData();
+            formData.append("file", videoRef.current.files[0])
+            const videoResponse = await axios.post(`${import.meta.env.VITE_API_URL}lectures/lecture-video`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+
+            if (videoResponse.status === 201) {
+                lectureData.video_path = videoResponse.data.file_path
+                toast.success('Video Uploaded Successfully')
+            }
+        } catch (error) {
+            toast.error(error.data)
+        }
+    }
+
+    const handleChange = (e) => {
+        setLectureData({ ...lectureData, [e.target.name]: e.target.value});
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        try {
+            const token = localStorage.getItem('access_token')
+            const lectureResponse = await axios.post(`${import.meta.env.VITE_API_URL}lectures/post`, lectureData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'accept': 'application/json'
+                }
+            })
+
+            if (lectureResponse.status === 200) {
+                toast.success('Lecture Record Added Successfully')
+            }
+        } catch (error) {
+            toast.error(error.data)
+        }
     }
 
     return (
         <div className="lecture-form-container">
-            <h2>Add New Lecture</h2>
-            <form>
+            <h2 className="add-lecture-heading">Add New Lecture</h2>
+            <form onSubmit={handleSubmit}>
                 <label htmlFor="lectureTitle">Lecture Title</label>
-                <input
-                    type="text"
-                    id="lectureTitle"
-                    name="lectureTitle"
-                    placeholder="Enter lecture title"
-                    required
-                />
+                <input type="text" id="lectureTitle" name="lecture_title" value={lectureData.lecture_title} onChange={handleChange} placeholder="Enter lecture title" required />
 
                 <label htmlFor="videoUpload">Upload Video</label>
-                <input
-                    type="file"
-                    id="videoUpload"
-                    name="videoUpload"
-                    accept="video/*"
-                    required
-                />
-                <span> Video Uploaded <Link to={`${import.meta.env.VITE_API_URL}static/lectures/Salesforce-video-VEED.mp4`}>  Click here to view </Link></span>
+                <div className="video-upload-container">
+                    <input type="file" id="videoUpload" name="videoUpload" accept="video/*" ref={videoRef} required />
+                    <button className="upload-btn" type="button" onClick={handleVideoUpload}> Upload Video </button>
+                </div>
 
                 <label htmlFor="moduleId">Select Module</label>
-                <select
-                    id="moduleId"
-                    name="moduleId"
-                    required
-                >
-                    <option value="">-- Select a Module --</option>
-                    <option value="1">Module 1</option>
-                    <option value="2">Module 2</option>
+                <select id="moduleId" name="module_id" onChange={handleChange} value={lectureData.module_id} required>
+                    <option value="" disabled>-- Select a Module --</option>
+                    { modules && (
+                        modules.map((module) => (
+                            <option key={module.id} value={module.id}> { module.module_title } </option>
+                        ))
+                    )}
                 </select>
 
                 <div className="new-module-link">
-                    <a href="#">Create a new module</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); setIsPopupOpen(true); }}>Create a new module</a>
                 </div>
+                
                 <label>Lecture Description (Markdown)</label>
-                    <div className="description-portion">
-                        <textarea
-                            id="markdown-input"
-                            name="lectureDescription"
-                            ref={inputRef}
-                            placeholder="Type your Markdown here..."
-                        />
-                    <div id="preview" className="markdown-preview">
-                        <ReactMarkdown>{preview}</ReactMarkdown>
+                <textarea id="markdown-input" name="lecture_description" value={lectureData.lecture_description} onChange={handleChange} ref={imageRef} placeholder="Type your Markdown here..." />
+                
+                <button type="button" className="preview-btn" onClick={previewMarkdown}>Preview</button>
+                <button type="submit" className="submit-btn">Add Lecture</button>
+            </form>
+            
+            <CreateModule isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
+            {isModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <div className="markdown-heading">
+                            <h2>Markdown Preview</h2>
+                            <span className="close-btn" onClick={closeModal}>&times;</span>
+                        </div>
+                        <div className="markdown-preview">
+                            <ReactMarkdown>{preview}</ReactMarkdown>
+                        </div>
                     </div>
                 </div>
-                <button type="button" className="preview-btn" onClick={previewMarkdown}>
-                    Preview
-                </button>
-
-
-                <button type="submit" className="submit-btn">
-                    Add Lecture
-                </button>
-            </form>
+            )}
         </div>
     );
 };

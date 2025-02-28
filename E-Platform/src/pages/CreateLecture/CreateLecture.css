@@ -7,7 +7,7 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.lecture-form-container h2 {
+.add-lecture-heading {
     text-align: center;
     margin-bottom: 25px;
     font-size: 26px;
@@ -18,6 +18,20 @@ form {
     display: flex;
     flex-direction: column;
     gap: 15px;
+}
+
+#videoUpload {
+    width: 89%;
+    height: 50px;
+}
+
+.video-upload-container {
+    display: flex;
+    gap: 1%;
+}
+
+.upload-btn {
+    top: -10px;
 }
 
 /* First row: Title, Video Upload, and Module Selection */
@@ -68,7 +82,7 @@ input, select {
 }
 
 #markdown-input, .markdown-preview {
-    width: 50%;
+    width: 100%;
     height: 280px;
     padding: 12px;
     border: 1px solid #bbb;
@@ -84,7 +98,6 @@ input, select {
 }
 
 button {
-    margin-top: 25px;
     padding: 14px;
     border: none;
     border-radius: 6px;
@@ -120,4 +133,47 @@ button {
         width: 100%;
         height: 220px;
     }
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 75%;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+    top: 0px;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.markdown-preview {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f4f4f4;
+    border-radius: 6px;
+    text-align: left;
+    /* max-height: 500px; */
+    overflow-y: auto;
+}
+
+.markdown-heading {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }

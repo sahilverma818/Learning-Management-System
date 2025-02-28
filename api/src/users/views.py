@@ -48,7 +48,8 @@ class UserModelViewSet(BaseManager):
         else:
             related_field = Users.enrollments
         response = super().fetch_record(current_user.id, related_field, db)
-        return response
+        if response:
+            return response
     
     def fetch_all_records(
             self,
@@ -64,7 +65,7 @@ class UserModelViewSet(BaseManager):
             )
         return super().fetch_all_records(db, params, page_number, page_size)
     
-    def _serialize(self, objects, related_field = None):
+    def _serialize(self, objects):
         """
         To Serialize data
         """

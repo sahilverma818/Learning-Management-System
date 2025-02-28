@@ -116,8 +116,15 @@ def refresh_token_api(refresh_token, db):
     try:
         token_data = utils.jwt_manager.verify_token(refresh_token)
         if (isinstance(token_data, schemas.TokenData)):
-            return utils.jwt_manager.create_access_token(token_data.__dict__)
-        
+            context_data = token_data.__dict__
+            tokens = utils.jwt_manager.create_access_token(context_data)
+            context_data['tokens'] = tokens
+            active_tokens[context_data['email']] = tokens['access_token']
+            return JSONResponse(
+                content={"message": "Tokens refreshed successfully", "data": context_data, "success": True},
+                status_code=200
+            )
+
     except Exception as e:
         logger.error(f"Error while refreshing tokens: {str(e)}")
         return JSONResponse(

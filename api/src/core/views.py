@@ -6,6 +6,7 @@ from fastapi import Depends
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.orm.collections import InstrumentedList
+from src.users.models import Users
 
 from src.auth.dependencies import get_current_user
 from src.core.database import get_db
@@ -38,7 +39,7 @@ class BaseManager:
         """
         return db.query(self.model)
     
-    def _serialize(self, objects, related_field = None):
+    def _serialize(self, objects):
         """
         To Serialize data
         """
@@ -94,7 +95,7 @@ class BaseManager:
             objects = objects.get(id)
 
             if objects:
-                objects = self._serialize(objects.__dict__, related_field)
+                objects = self._serialize(objects.__dict__)
                 return JSONResponse({
                     "success" : True,
                     "data": objects

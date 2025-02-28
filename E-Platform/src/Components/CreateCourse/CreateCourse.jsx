@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./CreateCourse.css"
 import { toast } from "react-toastify";
+import userData from "../../pages/ProfilePage/profilepage";
 
 const CreateCourse = ({ onClose }) => {
 
@@ -59,6 +60,7 @@ const CreateCourse = ({ onClose }) => {
 
         if (response.status === 200) {
             toast.success('Course Created Successfully')
+            toast.success(userData)
             onClose();
         }
     }

@@ -4,10 +4,11 @@ import "./profilepage.css"
 import { Link } from "react-router-dom";
 import CreateCourse from "../../Components/CreateCourse/CreateCourse";
 
+
 const ProfilePage = () => {
 
-    const [userData, setUserData] = useState({});
     const [isOpen, setIsOpen] = useState(false)
+    const [userData, setUserData] = useState({});
 
     const fetchUserData = async () => {
         try {
@@ -20,7 +21,6 @@ const ProfilePage = () => {
             });
             if (res.status === 200) {
                 setUserData(res.data.data);
-                
             }
         } catch (error) {
             console.error('Error fetching user data:', error);
@@ -78,10 +78,12 @@ const ProfilePage = () => {
                 </div>
 
                 <div className="courses-section">
+
                     <div className="courses-header">
                         <h3>My Courses</h3>
                         <button className="add-course-btn" onClick={() => setIsOpen(true)}>Add Courses +</button>
                     </div>
+
                     <div className="courses-grid">
                         { userData.courses && userData.courses.map((course) => (
                             <div className="course-card" key={course.id}>

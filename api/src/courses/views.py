@@ -74,7 +74,7 @@ class CourseModelViewSet(BaseManager):
             generated_list.append(obj_dict)
         return generated_list
     
-    def _serialize(self, objects, related_field):
+    def _serialize(self, objects):
         """
         To Serialize data
         """
