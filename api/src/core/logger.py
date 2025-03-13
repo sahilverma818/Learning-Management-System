@@ -5,7 +5,6 @@ from colorlog import ColoredFormatter
 from logging.handlers import RotatingFileHandler
 
 
-# Creating a directory for log files if it doesn't exist
 log_dir = 'log_files'
 os.makedirs(log_dir, exist_ok=True)
 
@@ -42,4 +41,4 @@ file_formatter = logging.Formatter(
     "%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s"
 )
 file_handler.setFormatter(file_formatter)
-logger.addHandler(file_handler)
+logger.addHandler(file_handler) 

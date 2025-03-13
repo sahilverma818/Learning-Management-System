@@ -10,6 +10,8 @@ const Navbar = () => {
     const handleLogout = () => {
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
+        localStorage.removeItem('user_role')
+        localStorage.removeItem('user_id')
         navigate('/login')
     }
 
@@ -31,9 +33,14 @@ const Navbar = () => {
                             <Link to={'/contacts'}>
                                 <li> Contacts </li>
                             </Link>
-                            <Link to={'profile'}>
+                            <Link to={'/profile'}>
                                 <li>  Profile </li>
                             </Link>
+                            { localStorage.getItem('user_role') === 'admin' ? (
+                                <Link to={'/dashboard'}>
+                                    <li> Dashboard </li>
+                                </Link>
+                            ) : null}
                         </ul>
                     </div>
                     { !localStorage.getItem('access_token') ? (

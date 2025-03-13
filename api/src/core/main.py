@@ -1,5 +1,8 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.core.database import engine, Base
@@ -18,9 +21,18 @@ from src.coupons.router import coupon_router
 Base.metadata.create_all(bind=engine)
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    os.makedirs('static', exist_ok=True)
+    os.makedirs('static/course_thumbnail', exist_ok=True)
+    os.makedirs('static/lectures', exist_ok=True)
+    os.makedirs('static/qr-code', exist_ok=True)
+    yield
+
 app = FastAPI(
     title='Learning Management System',
-    version='1.0.0'
+    version='1.0.0',
+    lifespan=lifespan
 )
 
 # added middlewares

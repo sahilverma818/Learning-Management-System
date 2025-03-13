@@ -4,7 +4,7 @@ import './CourseDetails.css'
 import { Link, useParams } from "react-router-dom";
 import Loader from "../../Components/Loader/Loader";
 import LectureInformation from "../../Components/LectureInformation/LectureInformation";
-import CreateOrder from "../../CreateOrder/CreateOrder";
+import CreateOrder from "../../Components/CreateOrder/CreateOrder";
 
 
 const CourseDetails = () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./CreateOrder.css"; // Ensure you have a CSS file for styling
+import "./CreateOrder.css";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";

@@ -1,3 +1,4 @@
+from enum import Enum
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
@@ -19,3 +20,10 @@ class CourseCreate(BaseModel):
     duration: int
     fees: float
     image: Optional[str]
+
+
+class DifficultyEnum(Enum):
+    beginner = "beginner"
+    intermediate = "intermediate"
+    hard = "hard"
+    professional = "professional"

@@ -37,6 +37,7 @@ const Login = () => {
         localStorage.setItem('access_token', response.data.data.tokens.access_token);
         localStorage.setItem('refresh_token', response.data.data.tokens.refresh_token);
         localStorage.setItem('user_role', response.data.data.role)
+        localStorage.setItem('user_id', response.data.data.id)
 
         let intervalId = setInterval(async() => {
           const userLoggedIn = localStorage.getItem('refresh_token');
@@ -48,6 +49,7 @@ const Login = () => {
                 localStorage.setItem('access_token', response.data.data.tokens.access_token);
                 localStorage.setItem('refresh_token', response.data.data.tokens.refresh_token);
                 localStorage.setItem('user_role', response.data.data.role)
+                localStorage.setItem('user_id', response.data.data.id)
               }
             } catch (error) {
               toast.error(error.response?.data?.message || "An error occurred");

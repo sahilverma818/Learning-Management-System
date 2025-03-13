@@ -57,7 +57,6 @@ class OrderModelViewSet(BaseManager):
             valid_from=datetime.now(),
             valid_to=datetime.now() + timedelta(days=30)
         )
-        print("Enrollment::: ", enrollment)
         return response
 
     
@@ -67,9 +66,9 @@ class OrderModelViewSet(BaseManager):
         """
         verification, amount = verify_and_calculate(data.course_id, data.coupon_id, db)
         if verification:
+            path = f"static/qr-code/dynamic_gpay_qr_amount_{amount}.png"
             upi_url = f"upi://pay?pa={self.UPI_ID}&pn={self.NAME}&am={amount}&cu=INR"
             qr_img = qrcode.make(upi_url)
-            path = f"static/qr-code/dynamic_gpay_qr_amount_{amount}.png"
             qr_img.save(path)
             return JSONResponse(
                 content={
