@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import qrcode
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import JSONResponse
 
 from src.enrollments.schemas import CreateEnrollment
 from src.core.views import BaseManager
@@ -17,9 +17,8 @@ from src.orders.schemas import (
     UpdateStatus
 )
 from src.orders.utils import verify_and_calculate
+from src.core.config import settings
 
-config = configparser.ConfigParser()
-config.read('config.ini')
 
 class OrderModelViewSet(BaseManager):
     """
@@ -31,8 +30,8 @@ class OrderModelViewSet(BaseManager):
         Init (Constructor method)
         """
         self.routes = APIRouter()
-        self.UPI_ID = config['gpay']['UPI_ID']
-        self.NAME = config['gpay']['NAME']
+        self.UPI_ID = settings.UPI_ID
+        self.NAME = settings.NAME
         super().__init__(Orders)
 
     def _get_routes(self):

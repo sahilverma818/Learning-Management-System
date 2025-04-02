@@ -27,11 +27,11 @@ class BaseManager:
         """
         Get Routes Method
         """
-        self.routes.add_api_route('/get/{id}', self.fetch_record, methods=['GET'], response_model=None)
-        self.routes.add_api_route('/post', self.create_record, methods=['POST'], response_model=None)
-        self.routes.add_api_route("/list", self.fetch_all_records, methods=["POST"], response_model=None)
-        self.routes.add_api_route("/update", self.update_record, methods=["PATCH"], response_model=None)
-        self.routes.add_api_route("/delete", self.delete_record, methods=["DELETE"], response_model=None)
+        self.routes.add_api_route(f'/get_{self.model.__name__.lower()}/{{id}}', self.fetch_record, methods=['GET'], response_model=None)
+        self.routes.add_api_route(f'/create_{self.model.__name__.lower()}', self.create_record, methods=['POST'], response_model=None)
+        self.routes.add_api_route(f"/get_{self.model.__name__.lower()}", self.fetch_all_records, methods=["POST"], response_model=None)
+        self.routes.add_api_route(f"/update_{self.model.__name__.lower()}/{{id}}", self.update_record, methods=["PATCH"], response_model=None)
+        self.routes.add_api_route(f"/delete_{self.model.__name__.lower()}/{{id}}", self.delete_record, methods=["DELETE"], response_model=None)
         
     def _get_queryset(self, db: Session):
         """

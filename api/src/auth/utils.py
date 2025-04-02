@@ -5,7 +5,7 @@ from jose import JWTError, jwt
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 
-from src.auth.config import settings
+from src.core.config import settings
 from src.auth.schemas import TokenData
 from src.core.logger import *
 

@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 from src.auth import schemas, utils
 from src.users import models
-from src.auth.config import settings
+from src.core.config import settings
 from src.core.logger import *
 
 

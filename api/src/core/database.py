@@ -1,19 +1,10 @@
-import configparser
-
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-config = configparser.ConfigParser()
-config.read('config.ini')
+from src.core.config import settings
 
-db_name = config['database']['db_name']
-db_user = config['database']['db_username']
-db_password = config['database']['db_password']
-db_host = config['database']['db_host']
-db_port = config['database']['db_port']
-
-SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+SQLALCHEMY_DATABASE_URL = settings.DB_URL
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
