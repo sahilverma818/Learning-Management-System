@@ -51,7 +51,7 @@ const CreateCourse = ({ onClose }) => {
             bodyData.last_enrollment_date = formData.last_enrollment_date
         }
 
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}courses/post`, bodyData, {
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}courses/create_courses`, bodyData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'accept': 'application/json'

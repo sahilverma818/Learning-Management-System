@@ -16,7 +16,7 @@ const CourseDetails = () => {
     useEffect(() => {
         const fetchCourse = async () => {
             try {
-                const course = await axios.get(`${import.meta.env.VITE_API_URL}courses/get/${id}`)
+                const course = await axios.get(`${import.meta.env.VITE_API_URL}courses/get_courses/${id}`)
 
                 if (course.status === 200) {
                     setCourseDetail(course.data.data)

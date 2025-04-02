@@ -11,7 +11,7 @@ const CourseList = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axios.post(`${import.meta.env.VITE_API_URL}courses/list`);
+                const response = await axios.post(`${import.meta.env.VITE_API_URL}courses/get_courses`);
 
                 if (response.status === 200) {
                     setCourses(response.data);

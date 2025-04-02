@@ -33,7 +33,7 @@ const CreateLecture = () => {
     useEffect(() => {
         const fetchModules = async () => {
             try {
-                const moduleResponse = await axios.post(`${import.meta.env.VITE_API_URL}modules/list`, {
+                const moduleResponse = await axios.post(`${import.meta.env.VITE_API_URL}modules/get_modules`, {
                     "course_id": parseInt(id)
                 })
 
@@ -75,7 +75,7 @@ const CreateLecture = () => {
         
         try {
             const token = localStorage.getItem('access_token')
-            const lectureResponse = await axios.post(`${import.meta.env.VITE_API_URL}lectures/post`, lectureData, {
+            const lectureResponse = await axios.post(`${import.meta.env.VITE_API_URL}lectures/create_lectures`, lectureData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'accept': 'application/json'

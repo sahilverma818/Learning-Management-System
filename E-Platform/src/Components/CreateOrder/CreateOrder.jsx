@@ -45,7 +45,7 @@ const CreateOrder = ({ isOpen, onClose }) => {
         e.preventDefault();
         
         try {
-            const orderCreate = await axios.post(`${import.meta.env.VITE_API_URL}orders/post`, {
+            const orderCreate = await axios.post(`${import.meta.env.VITE_API_URL}orders/create_orders`, {
                 "course_id": couponId,
                 "course_id": parseInt(id),
                 "amount_payable": paymentData.amount_payable,
@@ -76,7 +76,7 @@ const CreateOrder = ({ isOpen, onClose }) => {
     useEffect(() => {
         const fetchCoupons = async () => {
             try {
-                const couponResponse = await axios.post(`${import.meta.env.VITE_API_URL}coupons/list`, {})
+                const couponResponse = await axios.post(`${import.meta.env.VITE_API_URL}coupons/get_coupons`, {})
 
                 if (couponResponse.status === 200) {
                     setCouponData(couponResponse.data)
