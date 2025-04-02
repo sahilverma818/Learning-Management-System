@@ -21,7 +21,10 @@ const CreateOrder = ({ isOpen, onClose }) => {
             "course_id": parseInt(id),
         }
         if (e.target.value != "") {
-            context_data.coupon_id = parseInt(e.target.value)
+            let coupon_id = parseInt(e.target.value)
+            if (coupon_id != "0") {
+                context_data.coupon_id = parseInt(coupon_id)
+            }
         }
         try {
             const validateCoupon = await axios.post(`${import.meta.env.VITE_API_URL}orders/generate-qr`, context_data)
@@ -38,10 +41,29 @@ const CreateOrder = ({ isOpen, onClose }) => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Placeholder for API call to submit transaction
-        alert("Order Placed Successfully!");
+        
+        try {
+            const orderCreate = await axios.post(`${import.meta.env.VITE_API_URL}orders/post`, {
+                "course_id": couponId,
+                "course_id": parseInt(id),
+                "amount_payable": paymentData.amount_payable,
+                "payment_method": "UPI",
+                "transaction_id": transactionId
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'accept': 'application/json'
+                }
+            })
+
+            if (orderCreate.status == 200) {
+                toast.success('Order Placed Successfully. You will get further update on registered mail')
+            }
+        } catch(error) {
+            toast.error('Failed to Create Order. Try again or contact support.')
+        }
         onClose();
     };
 
@@ -81,7 +103,7 @@ const CreateOrder = ({ isOpen, onClose }) => {
                     <label>Coupon ID:</label>
                     <select id="coupon_id" name="coupon_id" onChange={handleCouponValidation} value={couponId} required>
                         <option value="" disabled>-- Select a Coupon --</option>
-                        <option value=""> Continue without Coupons </option>
+                        <option value="0"> Continue without Coupons </option>
                         { couponData && (
                         couponData.map((coupon) => (
                             <option key={coupon.id} value={coupon.id}> { coupon.code } </option>
@@ -114,10 +136,11 @@ const CreateOrder = ({ isOpen, onClose }) => {
                                 onChange={(e) => setTransactionId(e.target.value)}
                                 required
                             />
+                            {console.log("????",transactionId)}
                         </>
                     )}
 
-                    <button type="submit" disabled={!qrVisible || !transactionId}>Submit</button>
+                    <button type="submit" disabled={(!qrVisible) && (transactionId == null)}>Submit</button>
                 </form>
             </div>
         </div>
