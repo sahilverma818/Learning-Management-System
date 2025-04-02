@@ -2,12 +2,13 @@ import shutil
 from datetime import datetime as dt
 
 from fastapi import APIRouter, Depends, UploadFile, File
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from src.courses.models import Courses
 from src.core.views import BaseManager
 from src.auth.dependencies import get_current_user
 from src.core.database import get_db
+from src.contents.utils import verify_enrollment
 from src.contents.models import (
     Modules,
     Lectures
@@ -91,11 +92,11 @@ class LectureModelViewSet(BaseManager):
         db: Session = Depends(get_db)
     ):
         try:
-            # if not verify_enrollment(course_id, current_user.id, db):
-            #     return JSONResponse(
-            #         content={"message": "You don't have access to that course", "success": False},
-            #         status_code=403
-            #     )
+            if not verify_enrollment(course_id, current_user.id, db):
+                return JSONResponse(
+                    content={"message": "You don't have access to that course", "success": False},
+                    status_code=403
+                )
             result = db.query(Lectures).join(Modules).join(Courses).filter(Lectures.id==id, Modules.course_id==course_id).all()
             if result:
                 return self._serialize(result[0].__dict__)

@@ -1,6 +1,6 @@
 # init files
 
-*.ini
+config.ini
 *.db
 
 # Virtualenvs

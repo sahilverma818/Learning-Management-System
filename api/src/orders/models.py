@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Float, event
+from src.orders.events import track_order_changes
 from sqlalchemy.orm import relationship
 
 from src.core.database import Base
@@ -23,3 +24,6 @@ class Orders(Base):
     courses = relationship('Courses', back_populates="orders")
     users = relationship("Users", back_populates="orders")
     coupons = relationship("Coupons", back_populates="orders")
+
+
+event.listen(Orders, 'after_update', track_order_changes)

@@ -13,7 +13,7 @@ class CreateOrder(BaseModel):
     amount_payable: float
     payment_method: str
     transaction_id: str
-    user_id: int = None
+    user_id: Optional[int] = None
 
     def __init__(self, **data):
         super().__init__(**data)

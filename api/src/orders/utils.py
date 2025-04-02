@@ -17,3 +17,5 @@ def verify_and_calculate(course_id, coupon_id, db):
 
     payable_amount = course_details.fees - discount_amount
     return True, payable_amount
+
+
