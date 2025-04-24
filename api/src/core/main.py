@@ -46,7 +46,11 @@ app.add_middleware(
 )
 
 # mounting static directories
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount(
+    "/static",
+    StaticFiles(directory="static"),
+    name="static"
+)
 
 # routings
 app.include_router(

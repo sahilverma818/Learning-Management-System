@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     SMTP_PORT: int = config['gmail']['SMTP_PORT']
     UPI_ID: str = config['gpay']['UPI_ID']
     NAME: str = config['gpay']['NAME']
+    BACKEND_DOMAIN: str = config['application']['BACKEND_DOMAIN']
     DB_URL: str = f"mysql+pymysql://{config['database']['db_username']}:{config['database']['db_password']}@{config['database']['db_host']}:{config['database']['db_port']}/{config['database']['db_name']}"
 
 settings = Settings()

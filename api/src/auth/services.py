@@ -2,6 +2,7 @@ from passlib.context import CryptContext
 from fastapi.responses import JSONResponse
 
 from src.auth import schemas, utils
+from src.core.utils import send_email
 from src.users import models
 from src.core.config import settings
 from src.core.logger import *
@@ -88,7 +89,14 @@ def password_reset_request_api(db, email):
             }
             logger.info('Generating password access token for resetting password')
             token = utils.jwt_manager.create_access_token(context_data, expiry_time=settings.FORGET_PASSWORD_EXPIRY_MINUTES)
-            utils.send_email(email, token)
+            subject = "Password Reset Email"
+            template_name = "password_reset_email.html"
+            data = {
+                "token": token.get('access_token'),
+                "expiry": settings.FORGET_PASSWORD_EXPIRY_MINUTES,
+                "domain": settings.BACKEND_DOMAIN
+            }
+            send_email(user.email, data, template_name, subject)
             return JSONResponse(
                 content={"message": "Password reset link has been sent to your mail", "success": True},
                 status_code=200

@@ -34,7 +34,8 @@ class UserModelViewSet(BaseManager):
         """
         logger.info("Registering new user")
         data.hashed_password = hash_password(data.hashed_password)
-        return super().create_record(data, db)
+        user_obj = super().create_record(data, db)
+        return user_obj
     
     def update_record(self, id: int, data: schemas.UserUpdate, current_user = Depends(dependencies.get_current_user), db: Session = Depends(get_db)):
         """
