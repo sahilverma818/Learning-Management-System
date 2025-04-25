@@ -2,11 +2,6 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class GenerateQRSchema(BaseModel):
-    course_id: int
-    coupon_id: Optional[int] = None
-
-
 class CreateOrder(BaseModel):
     course_id: int
     coupon_id: Optional[int] = None

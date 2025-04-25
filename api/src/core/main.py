@@ -16,6 +16,7 @@ from src.contents.router import (
     module_router
 )
 from src.coupons.router import coupon_router
+from src.payments.router import payment_router
 
 
 Base.metadata.create_all(bind=engine)
@@ -91,4 +92,9 @@ app.include_router(
 app.include_router(
     enrollment_router,
     prefix="/enrollments"
+)
+
+app.include_router(
+    payment_router,
+    prefix="/payments"
 )
