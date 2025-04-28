@@ -15,14 +15,12 @@ class Users(Base):
     role = Column(Enum(RoleEnum), default=RoleEnum.student)
     firstname = Column(String(255))
     lastname = Column(String(255))
-    created_at = Column(DateTime, default=datetime.now())
-    updated_at = Column(DateTime, default=datetime.now())
-    is_archieved = Column(Boolean, default=False)
 
     # Define relationship
     courses = relationship("Courses", back_populates="instructor")
     orders = relationship("Orders", back_populates="users")
     enrollments = relationship("Enrollments", back_populates="users")
+    payments = relationship('Payments', back_populates='users')
 
     
 

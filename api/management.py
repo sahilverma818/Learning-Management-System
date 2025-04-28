@@ -1,6 +1,7 @@
 import click
 import uvicorn
 import subprocess
+import sys
 
 @click.group()
 def cli():
@@ -17,19 +18,28 @@ def start():
     )
 
 @cli.command()
-@click.argument("message", required=True)
+@click.option("-m", "--message", required=True, help="Migration message")
 def makemigration(message):
-    """ create a new alembic migration """
-    subprocess.run(
-        [
-            "alembic",
-            "revision",
-            "--autogenerate",
-            "-m",
-            message
-        ],
-        check=True
-    )
+    """Create a new Alembic migration."""
+    try:
+        subprocess.run(
+            [
+                "alembic",
+                "revision",
+                "--autogenerate",
+                "-m",
+                message
+            ],
+            check=True
+        )
+        click.echo(click.style("Migration created successfully!", fg="green"))
+    except subprocess.CalledProcessError as e:
+        click.echo(click.style(f"Error: Failed to create migration.\n{e}", fg="red"), err=True)
+        sys.exit(1)
+    except Exception as e:
+        click.echo(click.style(f"Unexpected error: {e}", fg="red"), err=True)
+        sys.exit(1)
+
 
 @cli.command()
 def migrate():

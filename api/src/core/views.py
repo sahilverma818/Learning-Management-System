@@ -157,7 +157,7 @@ class BaseManager:
         
         except Exception as e:
             return JSONResponse(
-                content={"message": "Failed to create record", "success": False},
+                content={"message": f"Failed to create record: {str(e)}", "success": False},
                 status_code=400
             )
                 

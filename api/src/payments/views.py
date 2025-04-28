@@ -1,11 +1,12 @@
+from datetime import datetime
+
 import stripe
 from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter, Query
-from fastapi.responses import JSONResponse
 
 from src.core.database import get_db
 from src.core.config import settings
-from src.coupons.views import CouponModelViewSet
+from src.payments.models import Payments
 
 class PaymentGateway:
 
@@ -14,13 +15,13 @@ class PaymentGateway:
         self._get_routes()
     
     def _get_routes(self):
-        self.routes.add_api_route('/handle-successful-payment', self.handle_successful_payment, methods=['GET'])
-        self.routes.add_api_route('/handle-failure-payment', self.handle_failure_payment, methods=['GET'])
+        self.routes.add_api_route('/handle-successful-payment', self.handle_successful_payment, methods=['GET'], response_model=None)
 
-    def create_checkout_page(self, amount, course_id):
+    def create_checkout_page(self, amount, course_id, order_id, user):
         stripe.api_key = settings.STRIPE_SECRET_KEY
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
+            billing_address_collection="auto",
             line_items=[{
                 'price_data': {
                     'currency': 'usd',
@@ -31,19 +32,40 @@ class PaymentGateway:
                 },
                 'quantity': 1,
             }],
+            metadata={
+                "course_id": course_id,
+                "user_id": user.id,
+                "order_id": order_id
+            },
+            custom_text={
+                'submit': {
+                    'message': 'Buy Course'
+                }
+            },
             mode='payment',
-            success_url=settings.BACKEND_DOMAIN + 'payments/handle-successful-payment?session_id={CHECKOUT_SESSION_ID}&' + f'course={course_id}',
-            cancel_url=settings.BACKEND_DOMAIN + 'payments/handle-failure-payment?session_id={CHECKOUT_SESSION_ID}'
+            success_url=settings.BACKEND_DOMAIN + 'payments/handle-successful-payment?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=settings.BACKEND_DOMAIN + 'payments/handle-successful-payment?session_id={CHECKOUT_SESSION_ID}'
         )
         return session.url
 
     async def handle_successful_payment(self,
         session_id = Query(None, description='Checkout Session Id'),
-        course = Query(None)
+        db: Session = Depends(get_db)
     ):
         stripe.api_key = settings.STRIPE_SECRET_KEY
         order_details = stripe.checkout.Session.retrieve(session_id)
-        print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", order_details)
 
-    async def handle_failure_payment(self):
-        pass
+        new_payment = Payments(
+            course_id=order_details.metadata.course_id,
+            user_id=order_details.metadata.user_id,
+            total_amount=order_details.amount_total,
+            transaction_id=order_details.id,
+            indent_id=order_details.payment_intent,
+            payment_status=order_details.payment_status,
+            session_status=order_details.status,
+            order_id=order_details.metadata.order_id
+        )
+
+        db.add(new_payment)
+        db.commit()
+        db.refresh(new_payment)

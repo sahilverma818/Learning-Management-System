@@ -1,6 +1,9 @@
+from datetime import datetime
+
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Column, DateTime, String, Boolean
 
 from src.core.config import settings
 
@@ -16,7 +19,7 @@ engine = create_engine(
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
-Base = declarative_base()
+base_db = declarative_base()
 
 def get_db():
     db = SessionLocal()
@@ -25,3 +28,11 @@ def get_db():
     except Exception as e:
         db.close()
         raise e
+
+class Base(base_db):
+
+    __abstract__ = True
+
+    created_at = Column(DateTime, default=datetime.now())
+    updated_at = Column(DateTime, default=datetime.now())
+    is_archived = Column(Boolean, default=False)

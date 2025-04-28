@@ -8,9 +8,5 @@ class CreateOrder(BaseModel):
     amount_payable: float
     user_id: Optional[int] = None
 
-    def __init__(self, **data):
-        super().__init__(**data)
-        self.user_id = None
-
 class UpdateStatus(BaseModel):
     status: str

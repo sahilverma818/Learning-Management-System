@@ -30,25 +30,36 @@ class OrderModelViewSet(BaseManager):
         self.routes = APIRouter()
         super().__init__(Orders)
 
-    async def create_record(self, data: CreateOrder, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    def create_record(self, data: CreateOrder, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
         """
         Create Method
         """
-        if current_user.role != 'admin':
-            data.user_id = current_user.id
-        record = super().create_record(data, db)
-        payment_gateway = PaymentGateway()
-        payment = payment_gateway.create_checkout_page(
-            amount=data.amount_payable,
-            course_id=data.course_id
-        )
-        return JSONResponse(
-            content={
-                "message": "Order created successfully",
-                "checkout_url": payment
-            }, status_code=201
-        )
-    
+        try:
+            if current_user.role != 'admin':
+                data.user_id = current_user.id
+            record = super().create_record(data, db)
+            if isinstance(record, JSONResponse):
+                return record
+
+            payment = PaymentGateway().create_checkout_page(
+                amount=data.amount_payable,
+                course_id=data.course_id,
+                order_id=record.id,
+                user=current_user
+            )
+            return JSONResponse(
+                content={
+                    "message": "Order created successfully",
+                    "checkout_url": payment
+                }, status_code=201
+            )
+        except Exception as e:
+            return JSONResponse(
+                content={
+                    'message': 'Failed to create order', 'success': False
+                }, status_code=400
+            )
+
     def update_record(self, id: int, data: UpdateStatus, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
         """
         Update Method

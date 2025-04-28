@@ -19,9 +19,6 @@ class Coupons(Base):
     start_date = Column(DateTime)
     expiry_date = Column(DateTime)
     discount_percentage = Column(Integer)
-    created_at = Column(DateTime, default=datetime.now())
-    updated_at = Column(DateTime, default=datetime.now())
-    is_archieved = Column(Boolean, default=False)
 
     orders = relationship("Orders", back_populates="coupons")
 

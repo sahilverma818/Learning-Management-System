@@ -19,9 +19,7 @@ class Courses(Base):
     duration = Column(Integer)
     fees = Column(Float)
     image = Column(String(255))
-    created_at = Column(DateTime, default=datetime.now())
     last_enrollment_date = Column(DateTime)
-    updated_at = Column(DateTime, default=datetime.now())
     is_archieved = Column(Boolean, default=False)
 
     # Define relationships
@@ -29,3 +27,4 @@ class Courses(Base):
     modules = relationship('Modules', back_populates='courses')
     orders = relationship("Orders", back_populates="courses")
     enrollments = relationship("Enrollments", back_populates="courses")
+    payments = relationship('Payments', back_populates='courses')

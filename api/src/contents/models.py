@@ -20,9 +20,6 @@ class Modules(Base):
     module_title = Column(String(255))
     module_description = Column(String(255))
     course_id = Column(Integer, ForeignKey('Courses.id'))
-    created_at = Column(DateTime, default=datetime.now())
-    updated_at = Column(DateTime, default=datetime.now())
-    is_archieved = Column(Boolean, default=False)
 
     # Define relationships
     courses = relationship("Courses", back_populates="modules")
@@ -38,10 +35,6 @@ class Lectures(Base):
     lecture_description = Column(String(255))
     video_path = Column(String(255))
     module_id = Column(Integer, ForeignKey("Modules.id"))
-    created_at = Column(DateTime, default=datetime.now())
-    updated_at = Column(DateTime, default=datetime.now())
-    is_archieved = Column(Boolean, default=False)
-
     
     # Define relationships
     modules = relationship('Modules', back_populates='lectures')
