@@ -16,3 +16,8 @@ class UpdateCoupon(BaseModel):
     start_date: Optional[date] = None
     expiry_date: Optional[date] = None
     discount_percentage: Optional[int] = None
+
+
+class VerifyCoupon(BaseModel):
+    course_id: int
+    coupon_id: int

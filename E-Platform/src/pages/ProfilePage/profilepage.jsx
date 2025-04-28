@@ -76,29 +76,30 @@ const ProfilePage = () => {
                         </div>
                     </div>
                 </div>
+                { localStorage.getItem('user_role') != 'admin' && (
+                    <div className="courses-section">
 
-                <div className="courses-section">
+                        <div className="courses-header">
+                            <h3>My Courses</h3>
+                            <button className="add-course-btn" onClick={() => setIsOpen(true)}>Add Courses +</button>
+                        </div>
 
-                    <div className="courses-header">
-                        <h3>My Courses</h3>
-                        <button className="add-course-btn" onClick={() => setIsOpen(true)}>Add Courses +</button>
-                    </div>
-
-                    <div className="courses-grid">
-                        { userData.courses && userData.courses.map((course) => (
-                            <div className="course-card" key={course.id}>
-                                <h4> { course.course_name } </h4>
-                                <p>Progress: 75%</p>
-                                <div className="progress-bar">
-                                    <div className="progress" style={{width: '75%'}}></div>
+                        <div className="courses-grid">
+                            { userData.courses && userData.courses.map((course) => (
+                                <div className="course-card" key={course.id}>
+                                    <h4> { course.course_name } </h4>
+                                    <p>Progress: 75%</p>
+                                    <div className="progress-bar">
+                                        <div className="progress" style={{width: '75%'}}></div>
+                                    </div>
+                                    <Link to={`/course/${course.id}`}>
+                                        <button className="continue-btn">Continue</button>
+                                    </Link>
                                 </div>
-                                <Link to={`/course/${course.id}`}>
-                                    <button className="continue-btn">Continue</button>
-                                </Link>
-                            </div>
-                        )) }
+                            )) }
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     )

@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 
-from src.enrollments.schemas import CreateEnrollment
+from src.payments.views import PaymentGateway
 from src.core.views import BaseManager
 from src.orders.models import Orders
 from src.core.database import get_db
@@ -28,26 +28,29 @@ class OrderModelViewSet(BaseManager):
         Init (Constructor method)
         """
         self.routes = APIRouter()
-        self.UPI_ID = settings.UPI_ID
-        self.NAME = settings.NAME
         super().__init__(Orders)
 
-    def create_record(self, data: CreateOrder, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    async def create_record(self, data: CreateOrder, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
         """
         Create Method
         """
-        data.user_id = current_user.id
-        return super().create_record(data, db)
+        if current_user.role != 'admin':
+            data.user_id = current_user.id
+        record = super().create_record(data, db)
+        payment_gateway = PaymentGateway()
+        payment = payment_gateway.create_checkout_page(
+            amount=data.amount_payable,
+            course_id=data.course_id
+        )
+        return JSONResponse(
+            content={
+                "message": "Order created successfully",
+                "checkout_url": payment
+            }, status_code=201
+        )
     
     def update_record(self, id: int, data: UpdateStatus, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
         """
         Update Method
         """
-        response = super().update_record(id, data, db)
-        enrollment = CreateEnrollment(
-            user_id=response.user_id,
-            course_id=response.course_id,
-            valid_from=datetime.now(),
-            valid_to=datetime.now() + timedelta(days=30)
-        )
-        return response
+        return super().update_record(id, data, db)
