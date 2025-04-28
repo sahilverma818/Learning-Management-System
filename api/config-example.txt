@@ -1,10 +1,13 @@
+[application]
+FRONTEND_DOMAIN = None
+BACKEND_DOMAIN = None
+
 [settings]
 SECRET_KEY = None
 ALGORITHMS = None
 ACCESS_TOKENS_EXPIRY_MINUTES = None
 REFRESH_TOKENS_EXPIRY_MINUTES = None
 FORGET_PASSWORD_EXPIRY_MINUTES = None
-BACKEND_DOMAIN = None
 
 
 [gmail]
@@ -20,6 +23,6 @@ db_password = None
 db_host = None
 db_port = None
 
-[gpay]
-UPI_ID = None
-NAME = None
+[STRIPE]
+SECRET_KEY = None
+PUBLIC_KEY = None

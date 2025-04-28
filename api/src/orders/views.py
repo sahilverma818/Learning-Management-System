@@ -1,7 +1,3 @@
-from datetime import datetime, timedelta
-
-import qrcode
-import stripe
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
@@ -13,7 +9,7 @@ from src.core.database import get_db
 from src.auth.dependencies import get_current_user
 from src.orders.schemas import (
     CreateOrder,
-    UpdateStatus
+    UpdateOrder
 )
 from src.core.config import settings
 
@@ -60,7 +56,7 @@ class OrderModelViewSet(BaseManager):
                 }, status_code=400
             )
 
-    def update_record(self, id: int, data: UpdateStatus, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    def update_record(self, id: int, data: UpdateOrder, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
         """
         Update Method
         """
