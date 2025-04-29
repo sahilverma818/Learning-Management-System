@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import stripe
 from sqlalchemy.orm import Session
 import sqlalchemy.exc
@@ -8,6 +6,7 @@ from fastapi import Depends, APIRouter, Query
 from src.core.database import get_db
 from src.core.config import settings
 from src.payments.models import Payments
+from src.courses.models import Courses
 from src.core.logger import logger
 
 class PaymentGateway:
@@ -19,7 +18,8 @@ class PaymentGateway:
     def _get_routes(self):
         self.routes.add_api_route('/handle-payment', self.handle_payment, methods=['GET'], response_model=None)
 
-    def create_checkout_page(self, amount, course_id, order_id, user):
+    def create_checkout_page(self, amount, course_id, order_id, user, db):
+        course = db.query(Courses).filter(Courses.id == course_id).first()
         stripe.api_key = settings.STRIPE_SECRET_KEY
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
@@ -28,9 +28,9 @@ class PaymentGateway:
                 'price_data': {
                     'currency': 'usd',
                     'product_data': {
-                        'name' : f"{course_id}",
+                        'name' : f"{course.course_name}" if course else f"{course_id}",
                     },
-                    'unit_amount': (int(amount) * 100) // 83,
+                    'unit_amount': (int(amount) * 100),
                 },
                 'quantity': 1,
             }],
@@ -45,8 +45,8 @@ class PaymentGateway:
                 }
             },
             mode='payment',
-            success_url=settings.BACKEND_DOMAIN + 'payments/handle-payment?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url=settings.BACKEND_DOMAIN + 'payments/handle-payment?session_id={CHECKOUT_SESSION_ID}'
+            success_url=settings.FRONTEND_DOMAIN + f'course/{course.id}' + '?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=settings.FRONTEND_DOMAIN + f'course/{course.id}' + '?session_id={CHECKOUT_SESSION_ID}'
         )
         return session.url
 
@@ -72,7 +72,11 @@ class PaymentGateway:
             db.add(new_payment)
             db.commit()
             db.refresh(new_payment)
+            return new_payment
+
         except sqlalchemy.exc.IntegrityError as e:
             logger.error('Payment record already exist !!!')
+            logger.error(e)
         except Exception as e:
+            logger.error(e)
             logger.error(f'failed to create payment: {str(e)}')

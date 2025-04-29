@@ -5,7 +5,9 @@ from src.auth import schemas, utils
 from src.core.utils import send_email
 from src.users import models
 from src.core.config import settings
-from src.core.logger import *
+from src.core.logger import logger
+from src.core.schemas import ResponseSchema
+from src.auth.schemas import Token
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -38,7 +40,7 @@ def login(db, form_data: schemas.UserCreate):
         user = authenticate_user(db, form_data.email, form_data.password)
         if not user:
             return JSONResponse(
-                content={"message": "User not found", "success": False},
+                content={"message": "user not found", "success": False},
                 status_code=404
             )
         context_data = {
@@ -51,8 +53,10 @@ def login(db, form_data: schemas.UserCreate):
         tokens = utils.jwt_manager.create_access_token(data=context_data)
         context_data['tokens'] = tokens
         active_tokens[user.email] = tokens['access_token']
-        return JSONResponse(
-            content={"message": "Login successful", "data": context_data},
+        return ResponseSchema[Token](
+            message="login successful",
+            data=context_data,
+            success=True,
             status_code=200
         )
     except Exception as e:

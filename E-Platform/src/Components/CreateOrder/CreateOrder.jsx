@@ -1,147 +1,149 @@
-import React, { useState, useEffect } from "react";
-import "./CreateOrder.css";
-import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import axios from "axios";
+import './CreateOrder.css';
+import { SiEducative } from "react-icons/si";
+import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const CreateOrder = ({ isOpen, onClose }) => {
 
-    const {id} = useParams();
-    const [couponId, setCouponId] = useState("");
-    const [isCouponValid, setIsCouponValid] = useState();
-    const [transactionId, setTransactionId] = useState("");
-    const [qrVisible, setQrVisible] = useState(false);
-    const [couponData, setCouponData] = useState([])
-    const [paymentData, setPaymentData] = useState({})
 
-    const handleCouponValidation = async (e) => {
+const CreateOrder = ({ isOpen, onClose, courseDetail }) => {
 
-        setCouponId(e.target.value)
-        const context_data = {
-            "course_id": parseInt(id),
-        }
-        if (e.target.value != "") {
-            let coupon_id = parseInt(e.target.value)
-            if (coupon_id != "0") {
-                context_data.coupon_id = parseInt(coupon_id)
-            }
-        }
+    const navigate = useNavigate();
+
+    const [coupon, setCoupon] = useState('');
+    const [discountAmount, setDiscountAmount] = useState(0);
+    const [finalPrice, setFinalPrice] = useState(courseDetail.fees);
+    const [couponId, setCouponId] = useState(null);
+    const [isCouponApplied, setIsCouponApplied] = useState(false);
+    
+
+    const placeOrder = async () => {
         try {
-            const validateCoupon = await axios.post(`${import.meta.env.VITE_API_URL}orders/generate-qr`, context_data)
+            const response = await axios.post(
+               `${import.meta.env.VITE_API_URL}orders/create_orders`,
+               {
+                    course_id: courseDetail.id,
+                    coupon_id: couponId,
+                    amount_payable: finalPrice
+               },
+               {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
+               }
+            )
 
-            if (validateCoupon.status === 200){
-                setIsCouponValid(true)
-                setQrVisible(true)
-                setPaymentData(validateCoupon.data)
+            if (response.status == 201) {
+                toast.success(response.data);
+                console.log("checkout url:::", response.data.checkout_url)
+                window.location.href = response.data.checkout_url;
             }
         } catch (error) {
-            setIsCouponValid(false);
-            setQrVisible(false);
-            toast.error(error.response?.data?.message || "An error occurred");
+            const message =
+                error.response?.data?.message || 'Something went wrong while placing the order.';
+            toast.error(message);
         }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
+    const validateCoupon = async () => {
         try {
-            const orderCreate = await axios.post(`${import.meta.env.VITE_API_URL}orders/create_orders`, {
-                "course_id": couponId,
-                "course_id": parseInt(id),
-                "amount_payable": paymentData.amount_payable,
-                "payment_method": "UPI",
-                "transaction_id": transactionId
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                    'accept': 'application/json'
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_URL}coupons/verify-coupon`,
+                {
+                    course_id: courseDetail.id,
+                    coupon_code: coupon
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('access_token')}`
+                    }
                 }
-            })
-
-            if (orderCreate.status == 200) {
-                toast.success('Order Placed Successfully. You will get further update on registered mail')
+            );
+    
+            if (response.status === 200) {
+                toast.success(response.data.message);
+                if (response.data.verified) {
+                    setDiscountAmount(response.data.discount_amount);
+                    setFinalPrice(response.data.payable_amount);
+                    setIsCouponApplied(true);
+                    setCouponId(response.data.coupon_id);
+                }
+            } else {
+                toast.error(response.data.message || 'Failed to apply coupon');
             }
-        } catch(error) {
-            toast.error('Failed to Create Order. Try again or contact support.')
+        } catch (error) {
+            const message =
+                error.response?.data?.message || 'Something went wrong while applying the coupon.';
+            toast.error(message);
         }
-        onClose();
     };
 
-    const handleClose = () => {
-        setIsCouponValid(false);
-        setQrVisible(false);
-        onClose();
-    }
+    const removeCoupon = () => {
+        setIsCouponApplied(false);
+        setDiscountAmount(0);
+        setFinalPrice(courseDetail.fees);
+        setCoupon('');
+        toast.info("Coupon removed");
+    };
 
-    useEffect(() => {
-        const fetchCoupons = async () => {
-            try {
-                const couponResponse = await axios.post(`${import.meta.env.VITE_API_URL}coupons/get_coupons`, {})
-
-                if (couponResponse.status === 200) {
-                    setCouponData(couponResponse.data)
-                }
-            } catch (error) {
-                toast.error(error.response?.data?.message || "An error occurred");
-            }
-        }
-        fetchCoupons();
-    }, [])
-
-    if (paymentData) {
-        console.log(paymentData);
-        
-    }
     if (!isOpen) return null;
 
     return (
-        <div className="popup-order-overlay">
-            <div className="popup-order-container">
-                <button className="close-order-btn" onClick={handleClose}>&times;</button>
-                <h2>Place Order</h2>
-                <form onSubmit={handleSubmit}>
-                    <label>Coupon ID:</label>
-                    <select id="coupon_id" name="coupon_id" onChange={handleCouponValidation} value={couponId} required>
-                        <option value="" disabled>-- Select a Coupon --</option>
-                        <option value="0"> Continue without Coupons </option>
-                        { couponData && (
-                        couponData.map((coupon) => (
-                            <option key={coupon.id} value={coupon.id}> { coupon.code } </option>
-                        ))
+        <div className="order-summary-container" onClick={onClose}>
+            <div className="order-card" onClick={(e) => e.stopPropagation()}>
+                <button className="close-button" onClick={onClose}>×</button>
+
+                <div className="nav_header">
+                    <div className="logo"><SiEducative/></div>
+                    <h2 className="nav_logo"><span>Edu</span>Verse</h2>
+                </div>
+
+                <h2 className="course-title">{courseDetail.course_name}</h2>
+                <p className="course-description">
+                    {courseDetail.course_description}
+                </p>
+
+                <div className="order-detail">
+                    <span className="order-label">Course Validity:</span>
+                    <span className="order-value">{courseDetail.duration} Months</span>
+                </div>
+
+                <div className="order-detail">
+                    <span className="order-label">Purchaser:</span>
+                    <span className="order-value">{localStorage.getItem('user_email')}</span>
+                </div>
+
+                <div className="price-section">
+                    <span className="price-label">Price:</span>
+                    <span className="price-value">₹ {courseDetail.fees}</span>
+                </div>
+
+                <div className='price-section'>
+                    <span className="price-label">Discount:</span>
+                    <span className="price-value">₹ {discountAmount}</span>
+                </div>
+
+                <div className="coupon-section">
+                    <input
+                        type="text"
+                        placeholder="Enter coupon code"
+                        className="coupon-input"
+                        value={coupon}
+                        onChange={(e) => setCoupon(e.target.value)}
+                        disabled={isCouponApplied}
+                    />
+                    {!isCouponApplied ? (
+                        <button className="apply-button secondary" onClick={validateCoupon}>Apply</button>
+                    ) : (
+                        <button className="apply-button danger" onClick={removeCoupon}>×</button>
                     )}
-                    </select>
-                    {isCouponValid === false && <p className="error-order">Invalid Coupon</p>}
+                </div>
 
-                    <label>Amount Payable:</label>
-                    <input type="text" value={paymentData.amount_payable} disabled />
+                <div className="final-price-section">
+                    <span className="final-price-label">Final Price:</span>
+                    <span className="final-price-value">₹ {finalPrice}</span>
+                </div>
 
-                    <label>Payment Method:</label>
-                    <input type="text" value="UPI" disabled />
-
-                    <label>QR Code:</label>
-                    <div className={`qr-order-code ${qrVisible ? "clear-order" : "blurry-order"}`}>
-                        <img
-                            src={`${import.meta.env.VITE_API_URL}${paymentData.file_path}`}
-                            alt="QR Code"
-                            className={qrVisible ? "clear-order" : "blurry-order"}
-                        />
-                    </div>
-
-                    {qrVisible && (
-                        <>
-                            <label>Transaction ID:</label>
-                            <input
-                                type="text"
-                                value={transactionId}
-                                onChange={(e) => setTransactionId(e.target.value)}
-                                required
-                            />
-                            {console.log("????",transactionId)}
-                        </>
-                    )}
-
-                    <button type="submit" disabled={(!qrVisible) && (transactionId == null)}>Submit</button>
-                </form>
+                <button className="checkout-button primary" onClick={placeOrder}>Proceed to Checkout</button>
             </div>
         </div>
     );

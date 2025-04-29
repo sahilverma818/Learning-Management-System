@@ -33,11 +33,11 @@ const Login = () => {
       });
 
       if (response.status === 200) {
-        debugger
         localStorage.setItem('access_token', response.data.data.tokens.access_token);
         localStorage.setItem('refresh_token', response.data.data.tokens.refresh_token);
         localStorage.setItem('user_role', response.data.data.role)
         localStorage.setItem('user_id', response.data.data.id)
+        localStorage.setItem('user_email', response.data.data.email)
 
         let intervalId = setInterval(async() => {
           const userLoggedIn = localStorage.getItem('refresh_token');
@@ -50,6 +50,7 @@ const Login = () => {
                 localStorage.setItem('refresh_token', response.data.data.tokens.refresh_token);
                 localStorage.setItem('user_role', response.data.data.role)
                 localStorage.setItem('user_id', response.data.data.id)
+                localStorage.setItem('user_email', response.data.data.email)
               }
             } catch (error) {
               toast.error(error.response?.data?.message || "An error occurred");

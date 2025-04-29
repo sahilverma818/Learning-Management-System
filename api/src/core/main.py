@@ -56,7 +56,8 @@ app.mount(
 # routings
 app.include_router(
     auth_router,
-    prefix="/auth"
+    prefix="/auth",
+    tags=['auth']
 )
 
 app.include_router(

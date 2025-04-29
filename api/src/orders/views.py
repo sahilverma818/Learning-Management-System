@@ -41,11 +41,12 @@ class OrderModelViewSet(BaseManager):
                 amount=data.amount_payable,
                 course_id=data.course_id,
                 order_id=record.id,
-                user=current_user
+                user=current_user,
+                db=db
             )
             return JSONResponse(
                 content={
-                    "message": "Order created successfully",
+                    "message": "Order created successfully. Redirecting to checkout",
                     "checkout_url": payment
                 }, status_code=201
             )

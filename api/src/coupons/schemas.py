@@ -20,4 +20,4 @@ class UpdateCoupon(BaseModel):
 
 class VerifyCoupon(BaseModel):
     course_id: int
-    coupon_id: int
+    coupon_code: str

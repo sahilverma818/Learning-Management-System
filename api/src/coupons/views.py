@@ -43,7 +43,7 @@ class CouponModelViewSet(BaseManager):
     def verify_and_calculate(self, data: VerifyCoupon, db: Session = Depends(get_db)):
         try:
             course_details = db.query(Courses).get(data.course_id)
-            coupon_details = db.query(Coupons).get(data.coupon_id)
+            coupon_details = db.query(Coupons).filter(Coupons.code==data.coupon_code).first()
 
             if coupon_details and coupon_details.expiry_date >= datetime.now():
                 discount_amount = (coupon_details.discount_percentage / 100) * course_details.fees
@@ -52,15 +52,19 @@ class CouponModelViewSet(BaseManager):
                     content={
                         "message": "Coupon applied successfully",
                         "payable_amount": amount,
+                        "discount_amount": discount_amount,
+                        "coupon_id": coupon_details.id,
+                        "verified": True,
                         "success": True
                     }, status_code=200
                 )
             else:
                 return JSONResponse(
                     content={
-                        "message": "Coupon is expired",
-                        "payable_amount": coupon_details.fees,
-                        "success": True
+                        "message": "Coupon may be unavailable or expired",
+                        "success": True,
+                        "verified": False,
+                        "payable_amount": course_details.fees
                     }, status_code=200
                 )
         except Exception as e:

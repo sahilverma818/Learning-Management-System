@@ -1,17 +1,56 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import './CourseDetails.css'
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import Loader from "../../Components/Loader/Loader";
 import LectureInformation from "../../Components/LectureInformation/LectureInformation";
 import CreateOrder from "../../Components/CreateOrder/CreateOrder";
+import PaymentSuccessModal from "../../Components/PaymentModel/paymentModel";
+import { toast } from "react-toastify";
 
 
 const CourseDetails = () => {
     const {id} = useParams();
+    const location = useLocation();
     const [isOrderPopUp, setIsOrderPopUp] = useState(false);
     const [courseDetail, setCourseDetail] = useState()
     const [viewIndex, setViewIndex] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [validatedPaymentData, setValidatedPaymentData] = useState(null);
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const sessionId = queryParams.get('session_id');
+    
+        if (sessionId) {
+            validatePayment(sessionId);
+        }
+    }, [location]);
+    
+    const validatePayment = async (sessionId) => {
+        try {
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}payments/handle-payment?session_id=${sessionId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('access_token')}`
+                    }
+                }
+            );
+    
+            if (response.status === 200) {
+                toast.success(response.data.message || 'Payment validated successfully');
+                setValidatedPaymentData(response.data);
+                setShowSuccessModal(true);
+            } else {
+                toast.error(response.data.message || 'Payment verification failed');
+            }
+        } catch (error) {
+            const message =
+                error.response?.data?.message || 'Something went wrong during payment validation.';
+            toast.error(message);
+        }
+    };
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -79,7 +118,14 @@ const CourseDetails = () => {
 
             <CreateOrder 
                 isOpen={isOrderPopUp} 
-                onClose={() => setIsOrderPopUp(false)} 
+                onClose={() => setIsOrderPopUp(false)}
+                courseDetail={courseDetail}
+            />
+
+            <PaymentSuccessModal
+                isOpen={showSuccessModal}
+                onClose={() => setShowSuccessModal(false)}
+                paymentData={validatedPaymentData}
             />
         </div>
     )
