@@ -11,7 +11,6 @@ from src.auth.schemas import Token
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-active_tokens = {}
 
 
 def verify_password(plain_password, hashed_password):
@@ -50,17 +49,21 @@ def login(db, form_data: schemas.UserCreate):
         }
 
         logger.info(f'Generating access token for {user.email}')
-        tokens = utils.jwt_manager.create_access_token(data=context_data)
-        context_data['tokens'] = tokens
-        active_tokens[user.email] = tokens['access_token']
-        return ResponseSchema[Token](
-            message="login successful",
-            data=context_data,
-            success=True,
-            status_code=200
+        context_data['tokens'] = utils.jwt_manager.create_access_token(data=context_data)
+        return JSONResponse(
+            content={
+                "message": "login successful",
+                "data": context_data,
+                "success": True
+            }, status_code=200
         )
     except Exception as e:
-        raise Exception
+        logger.error(f'Error while user login: {str(e)}')
+        return JSONResponse(
+            content={
+                "message": "Error while user login process. Please try again", "success": False
+            }, status_code=400
+        )
 
 
 def reset_password(db, form_data):
@@ -80,6 +83,7 @@ def reset_password(db, form_data):
             content={"message": "password reset unsuccessful", "success": False},
             status_code=400
         )
+
 
 def password_reset_request_api(db, email):
     logger.info(f"Requesting for password reset for email: {email}")
@@ -105,7 +109,7 @@ def password_reset_request_api(db, email):
                 content={"message": "Password reset link has been sent to your mail", "success": True},
                 status_code=200
             )
-        
+
         else:
             logger.info(f'No user found with that email: {email}')
             return JSONResponse(
@@ -122,7 +126,7 @@ def password_reset_request_api(db, email):
             content={"message": f"Unable to send email: {str(e)}", "success": False},
             status_code=500
         )
-    
+
 def refresh_token_api(refresh_token, db):
     logger.info('Refreshing access token using refresh token')
     try:
@@ -131,7 +135,6 @@ def refresh_token_api(refresh_token, db):
             context_data = token_data.__dict__
             tokens = utils.jwt_manager.create_access_token(context_data)
             context_data['tokens'] = tokens
-            active_tokens[context_data['email']] = tokens['access_token']
             return JSONResponse(
                 content={"message": "Tokens refreshed successfully", "data": context_data, "success": True},
                 status_code=200

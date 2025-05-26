@@ -58,7 +58,7 @@ class CourseModelViewSet(BaseManager):
         return super().update_record(id, data, db)
     
     def fetch_record(self, id: int, db: Session = Depends(get_db)):
-        related_field = Courses.modules
+        related_field = [Courses.modules, Courses.enrollments]
         return super().fetch_record(id, related_field, db)
     
     def _serialize_all(self, objects, related_field=None):

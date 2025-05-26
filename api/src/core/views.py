@@ -90,7 +90,8 @@ class BaseManager:
         try:
             objects = self._get_queryset(db)
             if related_field:
-                objects = objects.options(joinedload(related_field))
+                for fields in related_field:
+                    objects = objects.options(joinedload(fields))
             
             objects = objects.get(id)
 

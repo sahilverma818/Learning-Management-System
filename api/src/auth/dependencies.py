@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 from src.auth import utils
 from src.core import database
 from src.users.models import Users
-from src.auth.services import active_tokens
 from src.core.logger import *
 
 bearer_scheme = HTTPBearer()
@@ -24,9 +23,4 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(bearer_
             status_code=403,
             detail="Not Authenticated"
         )
-    # elif active_tokens.get(user.email) != token:
-    #     raise HTTPException(
-    #         status_code=403,
-    #         detail="You have been logged out. You might have been logged on someother device. Try logging in again"
-    #     )
     return user

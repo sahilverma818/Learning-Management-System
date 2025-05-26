@@ -20,20 +20,19 @@ from src.contents.schemas import (
     LectureUpdate
 )
 from src.users.schemas import UserUpdate
+from src.core.schemas import ResponseSchema
 
 
 class ModuleModelViewSet(BaseManager):
     """
     Module Model View Set Class
     """
-
     def __init__(self):
         """
         Init (Constructor method)
         """
         self.routes = APIRouter()
         super().__init__(Modules)
-
 
     def create_record(self, data: ModuleCreate, db: Session = Depends(get_db)): # current_user: UserUpdate = Depends(get_current_user) ,
         """
@@ -48,7 +47,10 @@ class ModuleModelViewSet(BaseManager):
         return super().update_record(id, data, db)
     
     def fetch_record(self, id: int, db: Session = Depends(get_db)):
-        related_field = Modules.lectures
+        """
+        fetch a single record
+        """
+        related_field = [Modules.lectures]
         return super().fetch_record(id, related_field, db)
     
 
@@ -92,7 +94,7 @@ class LectureModelViewSet(BaseManager):
         db: Session = Depends(get_db)
     ):
         try:
-            if not verify_enrollment(course_id, current_user.id, db):
+            if not verify_enrollment(course_id, current_user, db):
                 return JSONResponse(
                     content={"message": "You don't have access to that course", "success": False},
                     status_code=403

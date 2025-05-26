@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ReactMarkdown from 'react-markdown';
 import axios from "axios";
@@ -7,6 +7,7 @@ import CreateModule from "../../Components/CreateModule/CreateModule";
 import "./CreateLecture.css";
 
 const CreateLecture = () => {
+    const navigate = useNavigate();
     const {id} = useParams();
     const videoRef = useRef(null);
     const [preview, setPreview] = useState('');
@@ -22,6 +23,8 @@ const CreateLecture = () => {
 
 
     const previewMarkdown = () => {
+        console.log(lectureData);
+        
         setPreview(lectureData.lecture_description);
         setIsModalOpen(true);
     };
@@ -58,10 +61,11 @@ const CreateLecture = () => {
             })
 
             if (videoResponse.status === 201) {
-                setLectureData({ ...lectureData, [video_path]: videoResponse.data.video_path})
+                setLectureData({ ...lectureData, video_path: videoResponse.data.file_path})
                 toast.success('Video Uploaded Successfully')
             }
         } catch (error) {
+            console.log(error);
             toast.error(error.response?.data?.message || "An error occurred");
         }
     }
@@ -84,6 +88,7 @@ const CreateLecture = () => {
 
             if (lectureResponse.status === 200) {
                 toast.success('Lecture Record Added Successfully')
+                navigate(`/course/${id}`);
             }
         } catch (error) {
             toast.error(error.response?.data?.message || "An error occurred");

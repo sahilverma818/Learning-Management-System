@@ -23,30 +23,22 @@ class TokenAuthentication:
 
     def create_access_token(self, data: TokenData, expiry_time=None):
         logger.info('Access token generation functionality')
-        try:
-            valid_time = 2 if expiry_time else self.ACCESS_TOKENS_EXPIRY_MINUTES
-            refresh_token_valid_time = expiry_time if expiry_time else self.REFRESH_TOKEN_EXPIRY_MINUTES
-            access_expire = dt.now() + timedelta(minutes=valid_time)
-            data.update({
-                "exp": access_expire
-            })
-            access_encoded_jwt = jwt.encode(data, self.SECRET_KEY, algorithm=self.ALGORITHM)
-            data['exp'] = dt.now() + timedelta(minutes=refresh_token_valid_time)
-            refresh_encoded_jwt = jwt.encode(data, self.SECRET_KEY, algorithm=self.ALGORITHM)
-            context = {
-                "access_token": access_encoded_jwt,
-                "refresh_token": refresh_encoded_jwt,
-                "token_type": "bearer"
-            }
-            return context
-            
-        
-        except Exception as e:
-            return JSONResponse(
-                content={"message": f"Error while generating access token\n{str(e)}", "success": False},
-                status_code=500
-            )
-    
+        valid_time = 2 if expiry_time else self.ACCESS_TOKENS_EXPIRY_MINUTES
+        refresh_token_valid_time = expiry_time if expiry_time else self.REFRESH_TOKEN_EXPIRY_MINUTES
+        access_expire = dt.now() + timedelta(minutes=valid_time)
+        data.update({
+            "exp": access_expire
+        })
+        access_encoded_jwt = jwt.encode(data, self.SECRET_KEY, algorithm=self.ALGORITHM)
+        data['exp'] = dt.now() + timedelta(minutes=refresh_token_valid_time)
+        refresh_encoded_jwt = jwt.encode(data, self.SECRET_KEY, algorithm=self.ALGORITHM)
+        context = {
+            "access_token": access_encoded_jwt,
+            "refresh_token": refresh_encoded_jwt,
+            "token_type": "bearer"
+        }
+        return context        
+
     def verify_token(self, token: str):
         try:
             payload = jwt.decode(
