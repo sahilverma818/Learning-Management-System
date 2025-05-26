@@ -4,6 +4,8 @@ from datetime import datetime as dt
 from fastapi import APIRouter, Depends, UploadFile, File
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+import boto3
+
 from src.courses.models import Courses
 from src.core.views import BaseManager
 from src.auth.dependencies import get_current_user
@@ -21,6 +23,8 @@ from src.contents.schemas import (
 )
 from src.users.schemas import UserUpdate
 from src.core.schemas import ResponseSchema
+from src.core.config import settings
+from src.core.logger import logger
 
 
 class ModuleModelViewSet(BaseManager):
@@ -128,15 +132,20 @@ class LectureModelViewSet(BaseManager):
         """
         Saving video lectures
         """
-        file_path = f"static/lectures/lec_video_{str(dt.now())}_{file.filename}"
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+        try:
+            s3 = boto3.client('s3')
+            s3.upload_fileobj(file.file, settings.S3_BUCKET_NAME, f'lectures/lec_video_{str(dt.now())}_{file.filename}')
+            # file_path = f"static/lectures/lec_video_{str(dt.now())}_{file.filename}"
+            # with open(file_path, "wb") as buffer:
+            #     shutil.copyfileobj(file.file, buffer)
 
-        return JSONResponse(
-            content={
-                "message": "Lecture Video Saved Successfully",
-                "file_path": file_path,
-                "success": True
-            },
-            status_code=201
-        )
+            return JSONResponse(
+                content={
+                    "message": "Lecture Video Saved Successfully",
+                    "file_path": file.filename,
+                    "success": True
+                },
+                status_code=201
+            )
+        except Exception as e:
+            logger.error(f"[ERROR WHILE UPLOADING LECTURE VIDEO]: {str(e)}")

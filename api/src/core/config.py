@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     BACKEND_DOMAIN: str = config['application']['BACKEND_DOMAIN']
     FRONTEND_DOMAIN: str = config['application']['FRONTEND_DOMAIN']
     STRIPE_SECRET_KEY: str = config['STRIPE']['SECRET_KEY']
+    S3_BUCKET_NAME: str = config['aws']['S3_BUCKET_NAME']
+    S3_ACCESS_KEY: str = config['aws']['S3_ACCESS_KEY']
+    S3_SECRET_KEY: str = config['aws']['S3_SECRET_KEY']
+    S3_REGION_NAME: str = config['aws']['S3_REGION_NAME']
     DB_URL: str = f"mysql+pymysql://{config['database']['db_username']}:{config['database']['db_password']}@{config['database']['db_host']}:{config['database']['db_port']}/{config['database']['db_name']}"
 
 settings = Settings()
