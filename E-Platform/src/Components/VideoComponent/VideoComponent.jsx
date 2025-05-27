@@ -45,7 +45,7 @@ const VideoComponent = () => {
       <h1>{lectureDetails.lecture_title}</h1>
       <div className="video-player">
         <iframe 
-          src={`${import.meta.env.VITE_API_URL}${lectureDetails.video_path}`} 
+          src={`${lectureDetails.video_path}`} 
           title={`${lectureDetails.lecture_title}`}
           allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen

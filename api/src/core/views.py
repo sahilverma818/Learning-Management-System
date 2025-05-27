@@ -1,12 +1,14 @@
 import base64
 from typing import Dict, Any
 from datetime import datetime as dt
+from enum import Enum
 
 from fastapi import Depends
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.orm.collections import InstrumentedList
 from src.users.models import Users
+from src.courses.schemas import DifficultyEnum
 
 from src.auth.dependencies import get_current_user
 from src.core.database import get_db
@@ -51,6 +53,8 @@ class BaseManager:
                     data[object] = self._serialize_all(objects[object], class_object)
                 elif isinstance(objects[object], dt):
                     data[object] = str(objects[object])
+                elif isinstance(objects[object], DifficultyEnum):
+                    data[object] = objects[object].value
                 else:
                     data[object] = objects[object]
         return data
@@ -63,6 +67,8 @@ class BaseManager:
                 if hasattr(related_field, data):
                     if isinstance(object.__dict__[data], dt):
                         obj_dict[data] = str(object.__dict__[data])
+                    elif isinstance(objects[object], DifficultyEnum):
+                        obj_dict[data] = objects[object].value
                     else:
                         obj_dict[data] = object.__dict__[data]
             generated_list.append(obj_dict)

@@ -134,7 +134,10 @@ class LectureModelViewSet(BaseManager):
         """
         try:
             s3 = boto3.client('s3')
-            s3.upload_fileobj(file.file, settings.S3_BUCKET_NAME, f'lectures/lec_video_{str(dt.now())}_{file.filename}')
+            timestamp = dt.now().strftime("%Y%m%d%H%M%S")
+            s3_key = f'lectures/lec_video_{timestamp}_{file.filename}'
+
+            s3.upload_fileobj(file.file, settings.S3_BUCKET_NAME, s3_key)
             # file_path = f"static/lectures/lec_video_{str(dt.now())}_{file.filename}"
             # with open(file_path, "wb") as buffer:
             #     shutil.copyfileobj(file.file, buffer)
@@ -142,10 +145,16 @@ class LectureModelViewSet(BaseManager):
             return JSONResponse(
                 content={
                     "message": "Lecture Video Saved Successfully",
-                    "file_path": file.filename,
+                    "file_path": f"https://{settings.S3_BUCKET_NAME}.s3.{settings.S3_REGION_NAME}.amazonaws.com/{s3_key}",
                     "success": True
                 },
                 status_code=201
             )
         except Exception as e:
             logger.error(f"[ERROR WHILE UPLOADING LECTURE VIDEO]: {str(e)}")
+            return JSONResponse(
+                content={
+                    "message": "Unable to upload lecture video. Try again later",
+                    "success": False
+                }, status_code=400
+            )
