@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy.orm.collections import InstrumentedList
 
 from src.core.views import BaseManager
-from src.courses.schemas import DifficultyEnum
 from src.core.database import get_db
 from src.auth import dependencies
 from src.auth.services import hash_password
@@ -78,8 +77,6 @@ class UserModelViewSet(BaseManager):
                 elif isinstance(objects[object], InstrumentedList) and objects[object]:
                     class_object = type(objects[object][0])
                     data[object] = self._serialize_all(objects[object], class_object)
-                elif isinstance(objects[object], DifficultyEnum):
-                    data[object] = objects[object].value
                 else:
                     data[object] = objects[object]
         return data

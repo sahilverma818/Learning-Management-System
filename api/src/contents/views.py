@@ -133,14 +133,14 @@ class LectureModelViewSet(BaseManager):
         Saving video lectures
         """
         try:
-            s3 = boto3.client('s3')
+            # s3 = boto3.client('s3')
             timestamp = dt.now().strftime("%Y%m%d%H%M%S")
             s3_key = f'lectures/lec_video_{timestamp}_{file.filename}'
 
-            s3.upload_fileobj(file.file, settings.S3_BUCKET_NAME, s3_key)
-            # file_path = f"static/lectures/lec_video_{str(dt.now())}_{file.filename}"
-            # with open(file_path, "wb") as buffer:
-            #     shutil.copyfileobj(file.file, buffer)
+            # s3.upload_fileobj(file.file, settings.S3_BUCKET_NAME, s3_key)
+            file_path = f"static/lectures/lec_video_{s3_key}"
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
 
             return JSONResponse(
                 content={

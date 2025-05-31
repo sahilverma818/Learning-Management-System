@@ -19,7 +19,7 @@ class CourseCreate(BaseModel):
     last_enrollment_date: datetime = None
     duration: int
     fees: float
-    image: Optional[str]
+    image: Optional[str] = None
 
 
 class DifficultyEnum(Enum):
